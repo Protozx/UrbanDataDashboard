@@ -1,0 +1,14 @@
+Flask
+Werkzeug
+pandas
+numpy
+matplotlib
+seaborn
+Flask-Login
+bcrypt
+pytest
+Flask-Testing
+selenium
+pylint
+gunicorn
+Flask_bcrypt
