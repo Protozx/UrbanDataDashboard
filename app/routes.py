@@ -1,9 +1,10 @@
 # app/routes.py
 
-from flask import render_template, redirect, url_for, flash, request
+from flask import render_template, redirect, url_for, flash, request, abort, send_from_directory
 from flask_login import login_user, login_required, logout_user, current_user
 from . import app, bcrypt, get_db
 from .models import User
+import os as os
 
 @app.route('/')
 @login_required
@@ -87,10 +88,30 @@ def search():
 def profile():
     
     #return redirect(url_for('index'))
-    return render_template('upload.html')
+    return render_template('profile.html')
 
 @app.route('/view', methods=['GET', 'POST'])
 def view():
     
     #return redirect(url_for('index'))
-    return render_template('upload.html')
+    return render_template('view.html')
+
+
+@app.route('/download', methods=['GET', 'POST'])
+def download():
+    
+    #return redirect(url_for('index'))
+    return render_template('view.html')
+
+@app.route('/pdf', methods=['GET', 'POST'])
+def pdf_route():
+    
+    #return redirect(url_for('index'))
+    return render_template('pdf.html')
+
+PDF_DIRECTORY = "./datasets"
+
+@app.route("/reports/<path:pdf_name>", methods=["GET"])
+def serve_pdf(pdf_name):
+    # Cambia './datasets' por la ruta absoluta si es necesario
+    return send_from_directory("reports", pdf_name)

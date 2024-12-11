@@ -58,6 +58,10 @@ h1 {
     color: #bfbfbf;
 }
 
+.iverde {
+    color: #00b436;
+}
+
 .iazul {
     color: var(--principal);
 }

@@ -1,0 +1,49 @@
+<!-- app/templates/register.html -->
+
+{% extends "base.html" %}
+{% block content %}
+<div class="row justify-content-center">
+    
+            
+    <div class="col-md-11 ">
+        <div class="row">
+            
+
+                <div class="bg-white shadow rounded-1">
+                    <br>
+
+                    <div class="d-flex justify-content-start">
+                        <h2 class="fw-bold ms-3 mt-3 mb-4 iverde">Titulo del dataset</h2>
+                    </div>
+
+                    <div class=" ms-3 me-2 mt-1 mb-2">    
+                        <div class="d-flex">
+                            <h4 class="">Aurtor: Juan Gabriel</h4><p class="ms-4 mt-1">Fecha: </p>
+                        </div>
+                        <div class="mb-1 mt-1">
+                            <p>Descripciòn: Podrias tomar ese codigo y modificarlo para que la base de datos resultante, mantenga igual la tabla user pero agregué otra que llamada dataset donde se almacenen los siguientes datos.</p>
+                            
+                        </div>
+                    </div>
+
+                    <form method="GET" action="{{ url_for('download') }}">
+                        <br/>
+                        <div class="d-flex align-items-center ms-4 me-4">
+                            <button type="submit" class="btn btn-success esperanza flex-grow-1 gordito ojo me-1 fw-bold" id="download">Descargar</button>
+                            <button type="submit" class="btn btn-success esperanza flex-grow-1 gordito ojo ms-1 fw-bold" id="report">Generar informe</button>
+                        </div>                
+                        <br/>
+                    </form>
+
+                    <br>
+
+                    <div name="pdf">  </div>
+
+
+                </div>
+
+
+        </div>
+    </div>
+</div>
+{% endblock %}
