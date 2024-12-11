@@ -1,0 +1,43 @@
+<!-- app/templates/register.html -->
+
+{% extends "base.html" %}
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-6 shadow rounded-1 bg-white">
+        <div class="ms-4 me-4">
+            <h2 class="mt-5">Subir dataset</h2>
+            <form method="POST" action="{{ url_for('upload') }}">
+                <div class="mb-4 mt-3">
+                    <label for="username" class="form-label">Titulo del dataset</label>
+                    <input type="text" class="form-control mi-input custom-input" id="username" name="username" required>
+                </div>
+                
+                <div class="mb-4 mt-3">
+                    <label for="username" class="form-label">Descripción</label>
+                    <input type="text" class="form-control mi-input custom-input" id="desciption" name="desciption" required>
+                </div>
+
+                <div class="mb-4 mt-3">
+                    <label for="username" class="form-label">Etiquetas</label>
+                    <input type="text" class="form-control mi-input custom-input" id="tags" name="tags" required>
+                </div>
+
+                <div class="mb-4 mt-3">
+                    <label for="username" class="form-label">Fecha de elaboración</label>
+                    <input type="date" class="form-control mi-input custom-input" id="date" name="date" required>
+                </div>
+
+                <div class="mb-4 mt-3">
+                    <label for="archivo" class="form-label">Subir archivo</label>
+                    <input type="file" class="form-control mi-input custom-input" id="file" name="file" required>
+                </div>
+                
+
+
+                <button type="submit" class="btn btn-success gordito mb-5 ojo">Guardar</button>
+            </form>
+        </div>
+    </div>
+    <br/><br/>
+</div>
+{% endblock %}

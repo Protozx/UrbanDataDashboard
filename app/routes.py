@@ -65,3 +65,32 @@ def logout():
     logout_user()
     flash('Has cerrado sesión correctamente.', 'success')
     return redirect(url_for('login'))
+
+
+@app.route('/upload', methods=['GET', 'POST'])
+@login_required
+def upload():
+    
+    #return redirect(url_for('index'))
+    return render_template('upload.html')
+    
+    
+@app.route('/search', methods=['GET', 'POST'])
+@login_required
+def search():
+    
+    #return redirect(url_for('index'))
+    return render_template('browse.html')
+
+@app.route('/profile', methods=['GET', 'POST'])
+@login_required
+def profile():
+    
+    #return redirect(url_for('index'))
+    return render_template('upload.html')
+
+@app.route('/view', methods=['GET', 'POST'])
+def view():
+    
+    #return redirect(url_for('index'))
+    return render_template('upload.html')

@@ -3,24 +3,25 @@
 {% extends "base.html" %}
 {% block content %}
 <div class="row justify-content-center">
-    <div class="col-md-6">
-        <h2>Registrarse</h2>
-        <form method="POST" action="{{ url_for('register') }}">
-            <div class="mb-3">
-                <label for="username" class="form-label">Nombre de Usuario</label>
-                <input type="text" class="form-control" id="username" name="username" required>
-            </div>
-            <div class="mb-3">
-                <label for="password" class="form-label">Contraseña</label>
-                <input type="password" class="form-control" id="password" name="password" required>
-            </div>
-            <div class="mb-3">
-                <label for="confirm_password" class="form-label">Confirmar Contraseña</label>
-                <input type="password" class="form-control" id="confirm_password" name="confirm_password" required>
-            </div>
-            <button type="submit" class="btn btn-primary">Registrarse</button>
-            <a href="{{ url_for('login') }}" class="btn btn-link">¿Ya tienes una cuenta? Inicia Sesión</a>
-        </form>
+    <div class="col-md-6 shadow rounded-1 bg-white">
+        <div class="ms-4 me-4">
+            <h2 class="mt-5">Registrarse</h2>
+            <form method="POST" action="{{ url_for('register') }}">
+                <div class="mb-4 mt-3">
+                    <label for="username" class="form-label">Nombre de Usuario</label>
+                    <input type="text" class="form-control mi-input custom-input" id="username" name="username" required>
+                </div>
+                <div class="mb-4">
+                    <label for="password" class="form-label">Contraseña</label>
+                    <input type="password" class="form-control mi-input custom-input" id="password" name="password" required>
+                </div>
+                <div class="mb-4">
+                    <label for="confirm_password" class="form-label">Confirmar Contraseña</label>
+                    <input type="password" class="form-control mi-input custom-input" id="confirm_password" name="confirm_password" required>
+                </div>
+                <button type="submit" class="btn btn-success gordito mb-5 ojo">Registrarse</button>
+            </form>
+        </div>
     </div>
 </div>
 {% endblock %}

@@ -1,0 +1,42 @@
+<!-- app/templates/register.html -->
+
+{% extends "base.html" %}
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-0 col-md-2 mt-1">
+        <div class="h-100 shadow rounded-1 bg-white me-1 d-flex flex-column justify-content-start align-items-center">
+            <p class="text-white">Violeta</p>
+            <h5>Etiquetas</h5>
+            <p class="text-white">Simone</p>
+        </div>
+    </div>
+    
+    
+    
+    <div class="col-md-10 ">
+        <div class="shadow rounded-1 bg-white mt-1">
+            <form method="POST" action="{{ url_for('search') }}">
+                <br/>
+                <div class="d-flex align-items-center ms-4 me-4">
+                    <input type="text" class="form-control mi-input custom-input me-2 flex-grow-1" id="search" name="search" required>
+                    <button type="submit" class="btn btn-success gordito  ojo">Buscar</button>
+                </div>                
+                <br/>
+            </form>
+        </div>
+        <div class="shadow rounded-1 bg-white mt-4 ojo">
+            <br>
+            <div class="ms-4 me-4 mt-1 mb-2">    
+                <div class="d-flex">
+                    <h3>Titulo dataset</h3><p class="ms-4 mt-2">por Usuario que subio</p>
+                </div>
+                <div class="mb-1 mt-1">
+                    <p>Podrias tomar ese codigo y modificarlo para que la base de datos resultante, mantenga igual la tabla user pero agregué otra que llamada dataset donde se almacenen los siguientes datos.</p><h6 class="mt-3 igris">fecha de subida</h6>
+                    
+                </div>
+            </div>
+            <br>
+        </div>
+    </div>
+</div>
+{% endblock %}
