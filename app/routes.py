@@ -7,9 +7,20 @@ from .models import User
 import os as os
 from datetime import datetime
 
+from app.scripts.Reporter import statistics_pdf
+from app.scripts.Cleaner import proccessed_pdf
+
 DATASET_DIRECTORY = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'datasets')
+REPORT_DIRECTORY = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'reports')
+PROCESSED_DIRECTORY = os.path.join(DATASET_DIRECTORY, 'processed')
+
+
 if not os.path.exists(DATASET_DIRECTORY):
     os.makedirs(DATASET_DIRECTORY)
+if not os.path.exists(REPORT_DIRECTORY):
+    os.makedirs(REPORT_DIRECTORY)
+if not os.path.exists(PROCESSED_DIRECTORY):
+    os.makedirs(PROCESSED_DIRECTORY)
 
 
 @app.route('/')
@@ -137,9 +148,37 @@ def upload():
 @app.route('/search', methods=['GET', 'POST'])
 @login_required
 def search():
-    
-    #return redirect(url_for('index'))
-    return render_template('browse.html')
+    db = get_db()
+    cursor = db.cursor()
+
+    search_query = ""
+    if request.method == 'POST':
+        search_query = request.form.get('search', '').strip()
+
+    # Si hay búsqueda, filtramos por nombre, descripción o etiquetas
+    if search_query:
+        cursor.execute('''
+            SELECT datasets.id, datasets.name, datasets.description, datasets.upload_date, datasets.tag, datasets.size, users.username
+            FROM datasets
+            JOIN users ON datasets.user_id = users.id
+            WHERE datasets.name LIKE ? OR datasets.description LIKE ? OR datasets.tag LIKE ?
+            ORDER BY datasets.upload_date DESC
+        ''', (f'%{search_query}%', f'%{search_query}%', f'%{search_query}%'))
+    else:
+        # Mostrar todos los datasets
+        cursor.execute('''
+            SELECT datasets.id, datasets.name, datasets.description, datasets.upload_date, datasets.tag, datasets.size, users.username
+            FROM datasets
+            JOIN users ON datasets.user_id = users.id
+            ORDER BY datasets.upload_date DESC
+        ''')
+
+    datasets = cursor.fetchall()
+
+    # datasets es una lista de tuplas con la info del dataset
+    # Formato: (id, name, description, upload_date, tag, size, username)
+    return render_template('browse.html', datasets=datasets, search_query=search_query)
+
 
 @app.route('/profile', methods=['GET', 'POST'])
 @login_required

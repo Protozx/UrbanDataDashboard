@@ -1,50 +1,59 @@
-<!-- app/templates/register.html -->
+<!-- app/templates/browse.html -->
 
 {% extends "base.html" %}
 {% block content %}
 <div class="row justify-content-center">
-    
     <div class="d-flex justify-content-center">
-        <h2 class="fw-bold mt-3 mb-4">Explorar datasets</h2>
+        <h2 class="fw-bold mt-3 mb-4">explorar datasets</h2>
     </div>
     <div class="col-0 col-md-2 mt-1">
         <div class="h-100 shadow rounded-1 bg-white me-1 d-flex flex-column justify-content-start align-items-center">
-            <p class="text-white">Violeta</p>
-            <h5 class="fw-bold">Etiquetas</h5>
-            <p class="text-white">Simone</p>
+            <p class="text-white">violeta</p>
+            <h5 class="fw-bold">etiquetas</h5>
+            <p class="text-white">simone</p>
         </div>
     </div>
     
-    
-    
-    <div class="col-md-10 ">
-        
+    <div class="col-md-10">
         <div class="shadow rounded-1 bg-white mt-1">
-            <form method="POST" action="{{ url_for('view') }}">
+            <form method="POST" action="{{ url_for('search') }}">
                 <br/>
                 <div class="d-flex align-items-center ms-4 me-4">
-                    <input type="text" class="form-control mi-input custom-input me-2 flex-grow-1" id="search" name="search" required>
-                    <button type="submit" class="btn btn-success gordito  ojo">Buscar</button>
-                </div>                
+                    <input type="text" class="form-control mi-input custom-input me-2 flex-grow-1"
+                           id="search" name="search" value="{{ search_query }}" placeholder="buscar datasets...">
+                    <button type="submit" class="btn btn-success gordito ojo">buscar</button>
+                </div>
                 <br/>
             </form>
         </div>
         
-        <div class="shadow rounded-1 bg-white mt-4 ojo">
-            <br>
-            <div class="ms-4 me-4 mt-1 mb-2">    
-                <div class="d-flex">
-                    <h3 class="iverde">Titulo dataset</h3><p class="ms-4 mt-2">por Usuario que subio</p>
+        {% if datasets %}
+            {% for ds in datasets %}
+                <!-- ds[0] = id, ds[1] = name, ds[2] = description, ds[3] = upload_date, ds[4] = tag, ds[5] = size, ds[6] = username -->
+                <div class="shadow rounded-1 bg-white mt-4 ojo">
+                    <br>
+                    <div class="ms-4 me-4 mt-1 mb-2">
+                        <div class="d-flex">
+                            <h3 class="iverde">{{ ds[1] }}</h3>
+                            <p class="ms-4 mt-2">por {{ ds[6] }}</p>
+                        </div>
+                        <div class="mb-1 mt-1">
+                            <p>{{ ds[2] }}</p>
+                            <h6 class="mt-3 igris">{{ ds[3] }}</h6>
+                        </div>
+                    </div>
+                    <br>
                 </div>
-                <div class="mb-1 mt-1">
-                    <p>It arrived on a Thursday, an unmarked VHS tape with no return address. The label was crude, written in black ink: "The Eye Dark Eye Sees All." I wasn’t the type to watch unsettling things, but something about it pulled me in. I slid the tape into the player, the screen flickering to life.
-
-                        At first, it was just a dimly lit room. Figures sat around a table, their faces hidden in shadows, but their eyes—wide, unsettling—were locked on the camera. I felt a strange chill as I watched, unable to look away. The camera zoomed in on one of the figures, and the eye became the focal point, twitching unnaturally. It was as if the eye knew it was being watched, aware in a way that felt... wrong.</p><h6 class="mt-3 igris">fecha de subida</h6>
-                    
+            {% endfor %}
+        {% else %}
+            <div class="shadow rounded-1 bg-white mt-4 ojo">
+                <br>
+                <div class="ms-4 me-4 mt-1 mb-2">
+                    <p>no se encontraron datasets.</p>
                 </div>
+                <br>
             </div>
-            <br>
-        </div>
+        {% endif %}
     </div>
 </div>
 {% endblock %}
