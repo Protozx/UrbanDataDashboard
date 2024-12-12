@@ -12,3 +12,4 @@ selenium
 pylint
 gunicorn
 Flask_bcrypt
+reportlab>=3.6.0

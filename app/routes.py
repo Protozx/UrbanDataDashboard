@@ -5,6 +5,12 @@ from flask_login import login_user, login_required, logout_user, current_user
 from . import app, bcrypt, get_db
 from .models import User
 import os as os
+from datetime import datetime
+
+DATASET_DIRECTORY = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'datasets')
+if not os.path.exists(DATASET_DIRECTORY):
+    os.makedirs(DATASET_DIRECTORY)
+
 
 @app.route('/')
 @login_required
@@ -71,10 +77,62 @@ def logout():
 @app.route('/upload', methods=['GET', 'POST'])
 @login_required
 def upload():
-    
-    #return redirect(url_for('index'))
-    return render_template('upload.html')
-    
+    if request.method == 'POST':
+        # Obtenemos los datos del formulario
+        titulo = request.form.get('titulo')
+        descripcion = request.form.get('descripcion')
+        etiquetas = request.form.get('etiquetas')
+        fecha = request.form.get('fecha')
+        archivo = request.files.get('archivo')
+
+        # Validamos que existan datos obligatorios
+        if not titulo or not descripcion or not etiquetas or not fecha or not archivo:
+            flash('Todos los campos son obligatorios.', 'warning')
+            return render_template('upload.html')
+
+        # Convertimos la fecha a un formato manejable
+        try:
+            fecha_elaboracion = datetime.strptime(fecha, '%Y-%m-%d').date()
+        except ValueError:
+            flash('Formato de fecha inválido.', 'warning')
+            return render_template('upload.html')
+
+        # Verificamos si el archivo es permitido (por ejemplo, .csv)
+        # Esto es opcional, se puede omitir o ajustar
+        nombre_original = archivo.filename
+        extension = os.path.splitext(nombre_original)[1].lower()
+        if extension not in ['.csv', '.xlsx', '.xls', '.txt', '.json']:
+            flash('Formato de archivo no permitido.', 'warning')
+            return render_template('upload.html')
+
+        # Insertamos primero el registro en la base de datos sin el ID del archivo
+        db = get_db()
+        cursor = db.cursor()
+        # has_report y size se pueden manejar ahora o después
+        # Aquí, asumimos que has_report es False (0) inicialmente
+        # size se calculará después de guardar el archivo
+        cursor.execute('''
+            INSERT INTO datasets (user_id, name, description, upload_date, tag, size, has_report)
+            VALUES (?, ?, ?, ?, ?, ?, ?)
+        ''', (current_user.id, titulo, descripcion, fecha_elaboracion, etiquetas, 0, 0))
+        db.commit()
+        dataset_id = cursor.lastrowid
+
+        # Guardamos el archivo con el nombre del dataset_id
+        nombre_archivo_final = f"{dataset_id}{extension}"
+        ruta_archivo = os.path.join(DATASET_DIRECTORY, nombre_archivo_final)
+        archivo.save(ruta_archivo)
+
+        # Ahora que tenemos el archivo guardado, obtenemos su tamaño
+        tamanio = os.path.getsize(ruta_archivo)
+        # Actualizamos la base de datos con el tamaño
+        cursor.execute('UPDATE datasets SET size = ? WHERE id = ?', (tamanio, dataset_id))
+        db.commit()
+
+        flash('Tu dataset se ha guardado correctamente.', 'success')
+        return redirect(url_for('index'))
+
+    return render_template('upload.html')   
     
 @app.route('/search', methods=['GET', 'POST'])
 @login_required
