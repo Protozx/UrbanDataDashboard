@@ -1,3 +1,6 @@
+import matplotlib
+matplotlib.use('Agg')  # Usar backend no interactivo
+
 import os
 import shutil
 import pandas as pd
@@ -22,7 +25,7 @@ class ReportGenerator:
             try:
                 self.df[c] = self.df[c].str.strip()  # Eliminar espacios
                 self.df[c] = self.df[c].replace(',', '.', regex=True)  # En caso de decimales con coma
-                self.df[c] = pd.to_numeric(self.df[c], errors='ignore')
+                self.df[c] = pd.to_numeric(self.df[c], errors='coerce')
             except:
                 pass
         
@@ -241,3 +244,4 @@ def statistics_pdf(id, titulo, dataset_directory, report_directory):
     report = initialize_report(titulo + " de la isla", id, dataset_directory, report_directory)
     report.generate_report()
     borrar_contenido_carpeta("temp_images")
+    

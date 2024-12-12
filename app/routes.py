@@ -1,10 +1,10 @@
-# app/routes.py
+#app/routes.py
 
-from flask import render_template, redirect, url_for, flash, request, abort, send_from_directory
+from flask import render_template, redirect, url_for, flash, request, abort, send_from_directory, session
 from flask_login import login_user, login_required, logout_user, current_user
 from . import app, bcrypt, get_db
 from .models import User
-import os as os
+import os
 from datetime import datetime
 
 from app.scripts.Reporter import statistics_pdf
@@ -133,7 +133,40 @@ def upload():
 
     return render_template('upload.html')
    
-    
+def generar_bigrama(tags):
+    # Generar bigramas a partir de una lista de tags
+    # tags es una lista de tags vistos, cada dataset puede aportar varios tags
+    # Ej: tags = ["ciudad", "transporte", "verde", "transporte", "carretera", ...]
+    bigramas = {}
+    for i in range(len(tags)-1):
+        t1 = tags[i]
+        t2 = tags[i+1]
+        if t1 not in bigramas:
+            bigramas[t1] = {}
+        if t2 not in bigramas[t1]:
+            bigramas[t1][t2] = 0
+        bigramas[t1][t2] += 1
+    return bigramas
+
+def obtener_recomendaciones(tags_vistos, top_n=5):
+    # Dado tags_vistos (lista de tags que el usuario ha visto),
+    # genera un modelo bigrama y predice algunas etiquetas recomendadas.
+    if len(tags_vistos) < 2:
+        # No hay suficientes tags para bigramas
+        return []
+
+    bigramas = generar_bigrama(tags_vistos)
+    ultimo_tag = tags_vistos[-1]
+    if ultimo_tag in bigramas:
+        sugerencias = sorted(bigramas[ultimo_tag].items(), key=lambda x: x[1], reverse=True)
+        # sugerencias es una lista de tuplas (tag, frecuencia)
+        recomendadas = [s[0] for s in sugerencias[:top_n]]
+        return recomendadas
+    else:
+        # El último tag no tiene continuaciones en el historial
+        return []
+
+
 @app.route('/search', methods=['GET', 'POST'])
 @login_required
 def search():
@@ -161,14 +194,30 @@ def search():
         ''')
 
     datasets = cursor.fetchall()
-    return render_template('browse.html', datasets=datasets, search_query=search_query)
+
+    # Sistema de recomendación:
+    # Obtenemos los tags vistos por el usuario en esta sesión
+    tags_vistos = session.get('viewed_tags', [])
+    recomendaciones_tags = obtener_recomendaciones(tags_vistos, top_n=5)
+
+    # Si tenemos recomendaciones, ordenamos los datasets en base a cuántas de las etiquetas recomendadas tienen
+    if recomendaciones_tags:
+        def score(ds):
+            # ds = (id, name, description, upload_date, tag, size, username)
+            dataset_tags = ds[4].split(',')
+            dataset_tags = [t.strip().lower() for t in dataset_tags]
+            # Puntaje = # de tags recomendadas encontradas en este dataset
+            return sum(1 for t in dataset_tags if t in recomendaciones_tags)
+
+        # Reordenar datasets según score, mayor primero
+        datasets = sorted(datasets, key=score, reverse=True)
+
+    return render_template('browse.html', datasets=datasets, search_query=search_query, recomendaciones_tags=recomendaciones_tags)
 
 
 @app.route('/profile', methods=['GET', 'POST'])
 @login_required
 def profile():
-    
-    #return redirect(url_for('index'))
     return render_template('profile.html')
 
 
@@ -189,10 +238,15 @@ def view(dataset_id):
         flash('dataset no encontrado.', 'danger')
         return redirect(url_for('search'))
 
-    # dataset = (id, name, description, upload_date, tag, size, has_report, username)
     dataset_id, name, description, upload_date, tag, size, has_report, username = dataset
 
-    # Ruta del archivo original
+    # Guardar tags en la sesión
+    # tags separados por coma
+    dataset_tags = [t.strip().lower() for t in tag.split(',')]
+    if 'viewed_tags' not in session:
+        session['viewed_tags'] = []
+    session['viewed_tags'].extend(dataset_tags)
+
     archivo_original = None
     extension = ""
     for file in os.listdir(DATASET_DIRECTORY):
@@ -204,11 +258,9 @@ def view(dataset_id):
 
     ruta_original = os.path.join(DATASET_DIRECTORY, archivo_original) if archivo_original else None
 
-    # Comprobamos acciones del formulario
     if request.method == 'POST':
         action = request.form.get('action')
         if action == 'download':
-            # Descargar el dataset original
             if ruta_original and os.path.exists(ruta_original):
                 return send_from_directory(DATASET_DIRECTORY, archivo_original, as_attachment=True)
             else:
@@ -216,33 +268,29 @@ def view(dataset_id):
                 return redirect(url_for('view', dataset_id=dataset_id))
 
         elif action == 'report':
-            # Generar reporte
             flash('generando reporte, por favor espera...', 'info')
             statistics_pdf(
                 str(dataset_id),
                 name,
-                DATASET_DIRECTORY,  # Ruta absoluta para reportes
-                REPORT_DIRECTORY   # Asegúrate de pasar el directorio correcto
+                DATASET_DIRECTORY,
+                REPORT_DIRECTORY
             )
-            # Actualizar has_report
             cursor.execute('UPDATE datasets SET has_report = 1 WHERE id = ?', (dataset_id,))
             db.commit()
             flash('reporte generado con éxito.', 'success')
             return redirect(url_for('view', dataset_id=dataset_id))
 
         elif action == 'proccessed':
-            # Generar dataset preprocesado
             flash('generando dataset preprocesado, por favor espera...', 'info')
             proccessed_pdf(
                 str(dataset_id),
-                DATASET_DIRECTORY,   # Ruta absoluta del dataset
-                PROCESSED_DIRECTORY # Ruta absoluta del dataset preprocesado
+                DATASET_DIRECTORY,
+                PROCESSED_DIRECTORY
             )
             flash('dataset preprocesado generado con éxito.', 'success')
             return redirect(url_for('view', dataset_id=dataset_id))
 
         elif action == 'download_processed':
-            # Descargar el dataset preprocesado
             processed_file = f"{dataset_id}.csv"
             processed_path = os.path.join(PROCESSED_DIRECTORY, processed_file)
             if os.path.exists(processed_path):
@@ -251,11 +299,9 @@ def view(dataset_id):
                 flash('dataset preprocesado no encontrado. por favor genera uno antes.', 'danger')
                 return redirect(url_for('view', dataset_id=dataset_id))
 
-    # Verificamos si existe reporte PDF
     pdf_path = os.path.join(REPORT_DIRECTORY, f"{dataset_id}.pdf")
     pdf_exists = os.path.exists(pdf_path) and has_report == 1
 
-    # Verificamos si existe el preprocesado
     processed_path = os.path.join(PROCESSED_DIRECTORY, f"{dataset_id}.csv")
     processed_exists = os.path.exists(processed_path)
 
@@ -271,11 +317,8 @@ def view(dataset_id):
                            processed_exists=processed_exists)
 
 
-
 @app.route('/download', methods=['GET', 'POST'])
 def download():
-    
-    #return redirect(url_for('index'))
     return render_template('view.html')
 
 @app.route('/pdf', methods=['GET', 'POST'])
@@ -285,3 +328,14 @@ def pdf_route():
 @app.route("/reports/<path:pdf_name>", methods=["GET"])
 def serve_pdf(pdf_name):
     return send_from_directory("reports", pdf_name)
+
+
+
+def obtener_todas_etiquetas():
+    db = get_db()
+    cursor = db.cursor()
+    cursor.execute('SELECT tag FROM datasets')
+    etiquetas_dataset = cursor.fetchall()
+    etiquetas = [etiqueta for sublist in etiquetas_dataset for etiqueta in sublist[0].split(',')]
+    etiquetas = [etiqueta.strip().lower() for etiqueta in etiquetas if etiqueta.strip()]
+    return obtener_recomendaciones(etiquetas, top_n=None) 

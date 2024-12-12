@@ -9,6 +9,7 @@ import os
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY', 'tu_clave_secreta')
+app.secret_key = os.environ.get('SECRET_KEY') or 'tu_clave_secreta'
 
 # Inicializar Flask-Login
 login_manager = LoginManager()
@@ -17,6 +18,11 @@ login_manager.login_view = 'login'
 
 # Inicializar Bcrypt
 bcrypt = Bcrypt(app)
+
+
+
+
+
 
 DATABASE = os.path.join(app.root_path, 'database.db')
 
