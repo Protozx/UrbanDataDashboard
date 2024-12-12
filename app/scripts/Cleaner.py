@@ -170,28 +170,28 @@ def fill_missing_values_in_column(df, column, n=3, prediction_steps=1):
     df[column] = col_data
     return df
 
-def proccessed_pdf(input_csv, output_folder="app/datasets/proccessed"):
-    # Cargar el dataset
-    input_path = os.path.join("app/datasets", (input_csv + ".csv"))
-    df = pd.read_csv(input_path)
+def proccessed_pdf(input_csv, dataset_directory, processed_directory):
+    input_path = os.path.join(dataset_directory, f"{input_csv}.csv")
+    # Añadimos encoding
+    df = pd.read_csv(input_path, encoding='latin-1')
 
-    # Parametros del predictor
     n = 3
     prediction_steps = 1
 
-    # Por cada columna, verificar valores faltantes y '?'
+    # Importar las funciones necesarias dentro del mismo archivo o mantenerlas arriba
+    # (Las funciones de levenshtein_distance, is_numeric, etc. se asume que siguen definidas arriba)
+
     for col in df.columns:
-        if df[col].isna().any() or (df[col] == '?').any():
+        if df[col].isna().any() or (df[col].astype(str) == '?').any():
             df = fill_missing_values_in_column(df, col, n=n, prediction_steps=prediction_steps)
 
-    # Guardar el dataset limpio
-    # Si el output_folder no existe, crearlo
-    if not os.path.exists(output_folder):
-        os.makedirs(output_folder)
-    output_path = os.path.join(output_folder, (input_csv + ".csv"))
+    if not os.path.exists(processed_directory):
+        os.makedirs(processed_directory)
+    output_path = os.path.join(processed_directory, f"{input_csv}.csv")
     df.to_csv(output_path, index=False)
     print("Archivo limpio guardado en:", output_path)
 
+
 if __name__ == "__main__":
-    proccessed_pdf("16")
+    proccessed_pdf("16", "app/datasets", "app/datasets/processed")
     

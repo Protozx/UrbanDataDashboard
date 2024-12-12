@@ -89,39 +89,30 @@ def logout():
 @login_required
 def upload():
     if request.method == 'POST':
-        # Obtenemos los datos del formulario
         titulo = request.form.get('titulo')
         descripcion = request.form.get('descripcion')
         etiquetas = request.form.get('etiquetas')
         fecha = request.form.get('fecha')
         archivo = request.files.get('archivo')
 
-        # Validamos que existan datos obligatorios
         if not titulo or not descripcion or not etiquetas or not fecha or not archivo:
-            flash('Todos los campos son obligatorios.', 'warning')
+            flash('por favor, completa todos los campos.', 'warning')
             return render_template('upload.html')
 
-        # Convertimos la fecha a un formato manejable
         try:
             fecha_elaboracion = datetime.strptime(fecha, '%Y-%m-%d').date()
         except ValueError:
-            flash('Formato de fecha inválido.', 'warning')
+            flash('formato de fecha inválido.', 'warning')
             return render_template('upload.html')
 
-        # Verificamos si el archivo es permitido (por ejemplo, .csv)
-        # Esto es opcional, se puede omitir o ajustar
         nombre_original = archivo.filename
         extension = os.path.splitext(nombre_original)[1].lower()
         if extension not in ['.csv', '.xlsx', '.xls', '.txt', '.json']:
-            flash('Formato de archivo no permitido.', 'warning')
+            flash('formato de archivo no permitido.', 'warning')
             return render_template('upload.html')
 
-        # Insertamos primero el registro en la base de datos sin el ID del archivo
         db = get_db()
         cursor = db.cursor()
-        # has_report y size se pueden manejar ahora o después
-        # Aquí, asumimos que has_report es False (0) inicialmente
-        # size se calculará después de guardar el archivo
         cursor.execute('''
             INSERT INTO datasets (user_id, name, description, upload_date, tag, size, has_report)
             VALUES (?, ?, ?, ?, ?, ?, ?)
@@ -129,21 +120,19 @@ def upload():
         db.commit()
         dataset_id = cursor.lastrowid
 
-        # Guardamos el archivo con el nombre del dataset_id
         nombre_archivo_final = f"{dataset_id}{extension}"
         ruta_archivo = os.path.join(DATASET_DIRECTORY, nombre_archivo_final)
         archivo.save(ruta_archivo)
 
-        # Ahora que tenemos el archivo guardado, obtenemos su tamaño
         tamanio = os.path.getsize(ruta_archivo)
-        # Actualizamos la base de datos con el tamaño
         cursor.execute('UPDATE datasets SET size = ? WHERE id = ?', (tamanio, dataset_id))
         db.commit()
 
-        flash('Tu dataset se ha guardado correctamente.', 'success')
+        flash('tu dataset se ha guardado correctamente.', 'success')
         return redirect(url_for('index'))
 
-    return render_template('upload.html')   
+    return render_template('upload.html')
+   
     
 @app.route('/search', methods=['GET', 'POST'])
 @login_required
@@ -155,7 +144,6 @@ def search():
     if request.method == 'POST':
         search_query = request.form.get('search', '').strip()
 
-    # Si hay búsqueda, filtramos por nombre, descripción o etiquetas
     if search_query:
         cursor.execute('''
             SELECT datasets.id, datasets.name, datasets.description, datasets.upload_date, datasets.tag, datasets.size, users.username
@@ -165,7 +153,6 @@ def search():
             ORDER BY datasets.upload_date DESC
         ''', (f'%{search_query}%', f'%{search_query}%', f'%{search_query}%'))
     else:
-        # Mostrar todos los datasets
         cursor.execute('''
             SELECT datasets.id, datasets.name, datasets.description, datasets.upload_date, datasets.tag, datasets.size, users.username
             FROM datasets
@@ -174,9 +161,6 @@ def search():
         ''')
 
     datasets = cursor.fetchall()
-
-    # datasets es una lista de tuplas con la info del dataset
-    # Formato: (id, name, description, upload_date, tag, size, username)
     return render_template('browse.html', datasets=datasets, search_query=search_query)
 
 
@@ -187,11 +171,105 @@ def profile():
     #return redirect(url_for('index'))
     return render_template('profile.html')
 
-@app.route('/view', methods=['GET', 'POST'])
-def view():
-    
-    #return redirect(url_for('index'))
-    return render_template('view.html')
+
+@app.route('/view/<int:dataset_id>', methods=['GET', 'POST'])
+@login_required
+def view(dataset_id):
+    db = get_db()
+    cursor = db.cursor()
+    cursor.execute('''
+        SELECT datasets.id, datasets.name, datasets.description, datasets.upload_date, datasets.tag, datasets.size, datasets.has_report, users.username
+        FROM datasets
+        JOIN users ON datasets.user_id = users.id
+        WHERE datasets.id = ?
+    ''', (dataset_id,))
+    dataset = cursor.fetchone()
+
+    if not dataset:
+        flash('dataset no encontrado.', 'danger')
+        return redirect(url_for('search'))
+
+    # dataset = (id, name, description, upload_date, tag, size, has_report, username)
+    dataset_id, name, description, upload_date, tag, size, has_report, username = dataset
+
+    # Ruta del archivo original
+    archivo_original = None
+    extension = ""
+    for file in os.listdir(DATASET_DIRECTORY):
+        base, ext = os.path.splitext(file)
+        if base == str(dataset_id):
+            archivo_original = file
+            extension = ext
+            break
+
+    ruta_original = os.path.join(DATASET_DIRECTORY, archivo_original) if archivo_original else None
+
+    # Comprobamos acciones del formulario
+    if request.method == 'POST':
+        action = request.form.get('action')
+        if action == 'download':
+            # Descargar el dataset original
+            if ruta_original and os.path.exists(ruta_original):
+                return send_from_directory(DATASET_DIRECTORY, archivo_original, as_attachment=True)
+            else:
+                flash('archivo no encontrado.', 'danger')
+                return redirect(url_for('view', dataset_id=dataset_id))
+
+        elif action == 'report':
+            # Generar reporte
+            flash('generando reporte, por favor espera...', 'info')
+            statistics_pdf(
+                str(dataset_id),
+                name,
+                DATASET_DIRECTORY,  # Ruta absoluta para reportes
+                REPORT_DIRECTORY   # Asegúrate de pasar el directorio correcto
+            )
+            # Actualizar has_report
+            cursor.execute('UPDATE datasets SET has_report = 1 WHERE id = ?', (dataset_id,))
+            db.commit()
+            flash('reporte generado con éxito.', 'success')
+            return redirect(url_for('view', dataset_id=dataset_id))
+
+        elif action == 'proccessed':
+            # Generar dataset preprocesado
+            flash('generando dataset preprocesado, por favor espera...', 'info')
+            proccessed_pdf(
+                str(dataset_id),
+                DATASET_DIRECTORY,   # Ruta absoluta del dataset
+                PROCESSED_DIRECTORY # Ruta absoluta del dataset preprocesado
+            )
+            flash('dataset preprocesado generado con éxito.', 'success')
+            return redirect(url_for('view', dataset_id=dataset_id))
+
+        elif action == 'download_processed':
+            # Descargar el dataset preprocesado
+            processed_file = f"{dataset_id}.csv"
+            processed_path = os.path.join(PROCESSED_DIRECTORY, processed_file)
+            if os.path.exists(processed_path):
+                return send_from_directory(PROCESSED_DIRECTORY, processed_file, as_attachment=True)
+            else:
+                flash('dataset preprocesado no encontrado. por favor genera uno antes.', 'danger')
+                return redirect(url_for('view', dataset_id=dataset_id))
+
+    # Verificamos si existe reporte PDF
+    pdf_path = os.path.join(REPORT_DIRECTORY, f"{dataset_id}.pdf")
+    pdf_exists = os.path.exists(pdf_path) and has_report == 1
+
+    # Verificamos si existe el preprocesado
+    processed_path = os.path.join(PROCESSED_DIRECTORY, f"{dataset_id}.csv")
+    processed_exists = os.path.exists(processed_path)
+
+    return render_template('view.html', 
+                           dataset_id=dataset_id, 
+                           name=name, 
+                           description=description, 
+                           upload_date=upload_date, 
+                           tag=tag, 
+                           size=size, 
+                           username=username, 
+                           pdf_exists=pdf_exists,
+                           processed_exists=processed_exists)
+
 
 
 @app.route('/download', methods=['GET', 'POST'])
@@ -202,13 +280,8 @@ def download():
 
 @app.route('/pdf', methods=['GET', 'POST'])
 def pdf_route():
-    
-    #return redirect(url_for('index'))
     return render_template('pdf.html')
-
-PDF_DIRECTORY = "./datasets"
 
 @app.route("/reports/<path:pdf_name>", methods=["GET"])
 def serve_pdf(pdf_name):
-    # Cambia './datasets' por la ruta absoluta si es necesario
     return send_from_directory("reports", pdf_name)

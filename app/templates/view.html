@@ -1,49 +1,59 @@
-<!-- app/templates/register.html -->
-
+<!-- app/templates/view.html -->
 {% extends "base.html" %}
 {% block content %}
-<div class="row justify-content-center">
-    
-            
+<div class="row justify-content-center">   
     <div class="col-md-11 ">
         <div class="row">
-            
-
-                <div class="bg-white shadow rounded-1">
-                    <br>
-
-                    <div class="d-flex justify-content-start">
-                        <h2 class="fw-bold ms-3 mt-3 mb-4 iverde">Titulo del dataset</h2>
-                    </div>
-
-                    <div class=" ms-3 me-2 mt-1 mb-2">    
-                        <div class="d-flex">
-                            <h4 class="">Autor: Juan Gabriel</h4><p class="ms-4 mt-1">Fecha: </p>
-                        </div>
-                        <div class="mb-1 mt-1">
-                            <p>Descripciòn: Podrias tomar ese codigo y modificarlo para que la base de datos resultante, mantenga igual la tabla user pero agregué otra que llamada dataset donde se almacenen los siguientes datos.</p>
-                            
-                        </div>
-                    </div>
-
-                    <form method="GET" action="{{ url_for('download') }}">
-                        <br/>
-                        <div class="d-flex align-items-center ms-4 me-4">
-                            <button type="submit" class="btn btn-success esperanza flex-grow-1 gordito ojo me-1 fw-bold" id="download">Descargar</button>
-                            <button type="submit" class="btn btn-success esperanza flex-grow-1 gordito ojo ms-1 fw-bold" id="report">Generar informe</button>
-                            <button type="submit" class="btn btn-success esperanza flex-grow-1 gordito ojo ms-1 fw-bold" id="proccessed">Descargar dataset preprocesado</button>
-                        </div>                
-                        <br/>
-                    </form>
-
-                    <br>
-
-                    <div name="pdf">  </div>
-
-
+            <div class="bg-white shadow rounded-1">
+                <br>
+                <div class="d-flex justify-content-start">
+                    <h2 class="fw-bold ms-3 mt-3 mb-4 iverde">{{ name }}</h2>
                 </div>
 
+                <div class="ms-3 me-2 mt-1 mb-2">
+                    <div class="d-flex">
+                        <h4 class="">autor: {{ username }}</h4>
+                        <p class="ms-4 mt-1">fecha: {{ upload_date }}</p>
+                    </div>
+                    <div class="mb-1 mt-1">
+                        <p>descripción: {{ description }}</p>
+                    </div>
+                    <p>etiquetas: {{ tag }}</p>
+                    <p>tamaño: {{ size }} bytes</p>
+                </div>
 
+                <!-- Formulario con las acciones -->
+                <form method="POST" action="{{ url_for('view', dataset_id=dataset_id) }}">
+                    <br/>
+                    <div class="d-flex align-items-center ms-4 me-4">
+                        <button type="submit" class="btn btn-success esperanza flex-grow-1 gordito ojo me-1 fw-bold" name="action" value="download">descargar</button>
+                        
+                        {% if not pdf_exists %}
+                        <button type="submit" class="btn btn-success esperanza flex-grow-1 gordito ojo ms-1 fw-bold" name="action" value="report">generar informe</button>
+                        {% else %}
+                        <button type="submit" class="btn btn-secondary flex-grow-1 gordito ojo ms-1 fw-bold" disabled>reporte generado</button>
+                        {% endif %}
+                        
+                        {% if not processed_exists %}
+                        <button type="submit" class="btn btn-success esperanza flex-grow-1 gordito ojo ms-1 fw-bold" name="action" value="proccessed">generar dataset preprocesado</button>
+                        {% else %}
+                        <button type="submit" class="btn btn-success esperanza flex-grow-1 gordito ojo ms-1 fw-bold" name="action" value="download_processed">descargar dataset preprocesado</button>
+                        {% endif %}
+                    </div>                
+                    <br/>
+                </form>
+
+                <br>
+
+                <!-- Si existe el PDF, mostrarlo -->
+                {% if pdf_exists %}
+                <div class="ms-3 me-3 mb-3">
+                    <h3>Reporte</h3>
+                    <iframe src="{{ url_for('serve_pdf', pdf_name=dataset_id ~ '.pdf') }}" width="100%" height="600px"></iframe>
+                </div>
+                {% endif %}
+
+            </div>
         </div>
     </div>
 </div>

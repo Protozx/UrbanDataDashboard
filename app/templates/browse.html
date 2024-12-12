@@ -1,15 +1,14 @@
 <!-- app/templates/browse.html -->
-
 {% extends "base.html" %}
 {% block content %}
 <div class="row justify-content-center">
     <div class="d-flex justify-content-center">
-        <h2 class="fw-bold mt-3 mb-4">explorar datasets</h2>
+        <h2 class="fw-bold mt-3 mb-4">Explorar datasets</h2>
     </div>
     <div class="col-0 col-md-2 mt-1">
         <div class="h-100 shadow rounded-1 bg-white me-1 d-flex flex-column justify-content-start align-items-center">
             <p class="text-white">violeta</p>
-            <h5 class="fw-bold">etiquetas</h5>
+            <h5 class="fw-bold">Etiquetas</h5>
             <p class="text-white">simone</p>
         </div>
     </div>
@@ -20,8 +19,8 @@
                 <br/>
                 <div class="d-flex align-items-center ms-4 me-4">
                     <input type="text" class="form-control mi-input custom-input me-2 flex-grow-1"
-                           id="search" name="search" value="{{ search_query }}" placeholder="buscar datasets...">
-                    <button type="submit" class="btn btn-success gordito ojo">buscar</button>
+                           id="search" name="search" value="{{ search_query }}" placeholder="Buscar datasets...">
+                    <button type="submit" class="btn btn-success gordito ojo">Buscar</button>
                 </div>
                 <br/>
             </form>
@@ -29,12 +28,12 @@
         
         {% if datasets %}
             {% for ds in datasets %}
-                <!-- ds[0] = id, ds[1] = name, ds[2] = description, ds[3] = upload_date, ds[4] = tag, ds[5] = size, ds[6] = username -->
+                <!-- ds: (id, name, description, upload_date, tag, size, username) -->
                 <div class="shadow rounded-1 bg-white mt-4 ojo">
                     <br>
                     <div class="ms-4 me-4 mt-1 mb-2">
                         <div class="d-flex">
-                            <h3 class="iverde">{{ ds[1] }}</h3>
+                            <h3 class="iverde"><a href="{{ url_for('view', dataset_id=ds[0]) }}" class="text-decoration-none text-success">{{ ds[1] }}</a></h3>
                             <p class="ms-4 mt-2">por {{ ds[6] }}</p>
                         </div>
                         <div class="mb-1 mt-1">
