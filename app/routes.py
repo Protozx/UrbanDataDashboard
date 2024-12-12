@@ -213,7 +213,7 @@ def search():
         datasets = sorted(datasets, key=score, reverse=True)
 
     return render_template('browse.html', datasets=datasets, search_query=search_query, recomendaciones_tags=recomendaciones_tags)
-
+    
 
 @app.route('/profile', methods=['GET', 'POST'])
 @login_required
