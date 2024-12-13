@@ -2,6 +2,156 @@
 
 {% extends "base.html" %}
 {% block content %}
-    <h1>Bienvenido, {{ name }}!</h1>
-    <p>Esta es una página protegida solo para usuarios autenticados.</p>
+    
+
+
+    <div id="cuerpo_bg" class="mt-2 container-fluid g-0 fadeIn">
+
+        <div name="area_cuerpo" class="row">
+            <div class="col-0 col-sm-0">
+            </div>
+            <div class="col-11 col-sm-12 ms-3 ms-sm-0 text-start">
+
+
+                <div id="Verdadero cuerpo_main" class="mt-3 container-fluid">
+
+                    <div name="titulo" class="container-fluid g-0">
+
+                        <div name="base-de-cuerpo-interno" class="container-fluid g-0">
+                            <div class="row ">
+                                <div class="col-0 col-sm-1"> </div>
+                                <div name="escribe-el-texto-aqui" class="col-12 col-sm-10">
+
+
+                                    <div id="seccion1" class="container-fluid g-0 mt-3 mb-4">
+
+                                        <div class="row ">
+
+
+                                            <div class="col-12 col-md-6 d-flex d-sm-none">
+
+                                                
+
+                                            </div>
+
+                                            <div class="col-12 col-md-6">
+                                                <h1 class="iverde ms-4 mt-3 mb-4 fw-bold"> Urban Data Dashboard</h1>
+                                                </p>
+                                              
+                                                <br><br>
+
+
+
+                                                <div class="row">
+
+         
+                                                    <div class="col-12">
+                                                        <div id="demo"
+                                                            class="carousel slide d-none d-sm-flex bg-white shadow-sm rounded-5 mt-3 mb-4"
+                                                            data-bs-ride="carousel" data-bs-interval="2500">
+
+                                                            <div class="carousel-inner">
+                                                                <div class="carousel-item active">
+
+                                                                    <div
+                                                                        class="row bg-white  rounded-5 mt-3 mb-4">
+                                                                        <div class="col-1"></div>
+                                                                        <div
+                                                                            class="col-2 d-flex align-items-center justify-content-center mt-4 mb-3">
+                                                                            <i class="fa-solid fa-1 fa-4x"
+                                                                                style="color: #3cff6d;"></i>
+                                                                        </div>
+                                                                        <div
+                                                                            class="col-8 d-flex align-items-center justify-content-center mt-4 mb-3">
+                                                                            <p class="iverde"> Agrega la señal que deseas visualizar. </p>
+                                                                        </div>
+                                                                        <div class="col-1"></div>
+                                                                    </div>
+
+                                                                </div>
+                                                                <div class="carousel-item">
+
+                                                                    <div
+                                                                        class="row bg-white  rounded-5 mt-3 mb-4">
+                                                                        <div class="col-1"></div>
+                                                                        <div
+                                                                            class="col-2 d-flex align-items-center justify-content-center mt-4 mb-3">
+                                                                            <i class="fa-solid fa-2 fa-4x"
+                                                                                style="color: #3cff6d;"></i>
+                                                                        </div>
+                                                                        <div
+                                                                            class="col-8 d-flex align-items-center justify-content-center mt-4 mb-3">
+                                                                            <p class="iverde"> Cambia los parámetros de acuerdo a tus necesidades. </p>
+                                                                        </div>
+
+                                                                        <div class="col-1"></div>
+                                                                    </div>
+
+                                                                </div>
+                                                                <div class="carousel-item">
+                                                                    <div
+                                                                        class="row bg-white  rounded-5 mt-3 mb-4">
+                                                                        <div class="col-1"></div>
+                                                                        <div
+                                                                            class="col-2 d-flex align-items-center justify-content-center mt-4 mb-3">
+                                                                            <i class="fa-solid fa-3 fa-4x"
+                                                                                style="color: #3cff6d;"></i>
+                                                                        </div>
+                                                                        <div
+                                                                            class="col-8 d-flex align-items-center justify-content-center mt-4 mb-3">
+                                                                            <p class="iverde">Actualiza la señal. </p>
+                                                                        </div>
+                                                                        <div class="col-1"></div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+
+                                                            <button class="carousel-control-prev" type="button"
+                                                                data-bs-target="#demo" data-bs-slide="prev">
+                                                            </button>
+                                                            <button class="carousel-control-next" type="button"
+                                                                data-bs-target="#demo" data-bs-slide="next">
+                                                            </button>
+                                                        </div>
+                                                    </div>
+
+                                                </div>
+
+
+                                            </div>
+
+                                            <div class="col-12 col-md-6 d-sm-flex justify-content-center align-items-center">
+
+                                                <img src="{{ url_for('static', filename='img/1.png') }}" alt="Descripción de la imagen"
+                                                    class="img-fluid m-sm-5 m-0 shadow-sm rounded-2 puerco">
+
+                                            </div>
+
+
+                                        </div>
+
+
+
+                                    </div>
+
+                                </div>
+                                <div class="col-0 col-sm-1"> </div>
+                            </div>
+                        </div>
+
+
+
+
+                    </div>
+                </div>
+            </div>
+            <div class="col-0 col-sm-0">
+            </div>
+        </div>
+    </div>
+
+
+
+
+
 {% endblock %}

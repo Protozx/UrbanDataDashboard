@@ -117,7 +117,7 @@ h1 {
 .puerco {
     width: 750px;
     /* Define el ancho deseado para tus imágenes cuadradas */
-    height: 700px;
+    height: 300px;
     /* Define la altura deseada para tus imágenes cuadradas */
     overflow: hidden;
     /* Oculta cualquier parte de la imagen que se desborde del contenedor */

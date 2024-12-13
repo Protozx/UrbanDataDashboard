@@ -12,32 +12,32 @@
 
                 <div class="ms-3 me-2 mt-1 mb-2">
                     <div class="d-flex">
-                        <h4 class="">autor: {{ username }}</h4>
-                        <p class="ms-4 mt-1">fecha: {{ upload_date }}</p>
+                        <h4 class="">Autor: {{ username }}</h4>
+                        <p class="ms-4 mt-1">Fecha: {{ upload_date }}</p>
                     </div>
                     <div class="mb-1 mt-1">
-                        <p>descripción: {{ description }}</p>
+                        <p>Descripción: {{ description }}</p>
                     </div>
-                    <p>etiquetas: {{ tag }}</p>
-                    <p>tamaño: {{ size }} bytes</p>
+                    <p>Etiquetas: {{ tag }}</p>
+                    <p>Tamaño: {{ size }} bytes</p>
                 </div>
 
                 <!-- Formulario con las acciones -->
                 <form method="POST" action="{{ url_for('view', dataset_id=dataset_id) }}">
                     <br/>
                     <div class="d-flex align-items-center ms-4 me-4">
-                        <button type="submit" class="btn btn-success esperanza flex-grow-1 gordito ojo me-1 fw-bold" name="action" value="download">descargar</button>
+                        <button type="submit" class="btn btn-success esperanza flex-grow-1 gordito ojo me-1 fw-bold" name="action" value="download">Descargar</button>
                         
                         {% if not pdf_exists %}
-                        <button type="submit" class="btn btn-success esperanza flex-grow-1 gordito ojo ms-1 fw-bold" name="action" value="report">generar informe</button>
+                        <button type="submit" class="btn btn-success esperanza flex-grow-1 gordito ojo ms-1 fw-bold" name="action" value="report">Generar reporte</button>
                         {% else %}
-                        <button type="submit" class="btn btn-secondary flex-grow-1 gordito ojo ms-1 fw-bold" disabled>reporte generado</button>
+                        <button type="submit" class="btn btn-secondary flex-grow-1 gordito ojo ms-1 fw-bold" disabled>Reporte generado</button>
                         {% endif %}
                         
                         {% if not processed_exists %}
-                        <button type="submit" class="btn btn-success esperanza flex-grow-1 gordito ojo ms-1 fw-bold" name="action" value="proccessed">generar dataset preprocesado</button>
+                        <button type="submit" class="btn btn-success esperanza flex-grow-1 gordito ojo ms-1 fw-bold" name="action" value="proccessed">Generar dataset preprocesado</button>
                         {% else %}
-                        <button type="submit" class="btn btn-success esperanza flex-grow-1 gordito ojo ms-1 fw-bold" name="action" value="download_processed">descargar dataset preprocesado</button>
+                        <button type="submit" class="btn btn-success esperanza flex-grow-1 gordito ojo ms-1 fw-bold" name="action" value="download_processed">Descargar dataset preprocesado</button>
                         {% endif %}
                     </div>                
                     <br/>
