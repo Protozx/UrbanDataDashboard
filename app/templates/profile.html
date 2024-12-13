@@ -10,85 +10,59 @@
         
     <div class="col-md-11 ">
         <div class="row">
-            <div class="col-6 mt-4 ojo">
-                <div class="bg-white shadow rounded-1">
-                    <br>
-                    <div class=" ms-3 me-2 mt-1 mb-2">    
-                        <div class="d-flex">
-                            <h3 class="iverde">Titulo dataset</h3><p class="ms-4 mt-2">por Usuario que subio</p>
-                        </div>
-                        <div class="mb-1 mt-1">
-                            <p>Podrias tomar ese codigo y modificarlo para que la base de datos resultante, mantenga igual la tabla user pero agregué otra que llamada dataset donde se almacenen los siguientes datos.</p><h6 class="mt-3 igris">fecha de subida</h6>
-                            
-                        </div>
-                    </div>
-                    <br>
-                </div>
-            </div>
 
-            <div class="col-6 mt-4 ojo">
-                <div class="bg-white shadow rounded-1">
-                    <br>
-                    <div class="ms-3 me-2 mt-1 mb-2">    
-                        <div class="d-flex">
-                            <h3 class="iverde">Titulo dataset</h3><p class="ms-4 mt-2">por Usuario que subio</p>
-                        </div>
-                        <div class="mb-1 mt-1">
-                            <p>Podrias tomar ese codigo y modificarlo para que la base de datos resultante, mantenga igual la tabla user pero agregué otra que llamada dataset donde se almacenen los siguientes datos.</p><h6 class="mt-3 igris">fecha de subida</h6>
-                            
-                        </div>
-                    </div>
-                    <br>
-                </div>
-            </div>
+            {% if datasets %}
+                {% for ds in datasets %}
+                    <!-- ds: (id, name, description, upload_date, tag, size, username) -->
+                    <div class="col-6">
+                        
+                        <div class="shadow rounded-1 bg-white mt-4 ojo">
+                            <br>
+                            <div class="ms-3 me-2 mt-1 mb-2">
+                                <div class="d-flex">
+                                    <h3 class="iverde">
+                                        <a href="{{ url_for('view', dataset_id=ds[0]) }}" class="text-decoration-none text-success">{{ ds[1] }}</a>
+                                    </h3>
+                                </div>
+                                <div class="mb-1 mt-1">
+                                    <p>{{ ds[2] }}</p>
+                                    <div class="d-flex align-items-center ms-1 me-1">
+                                        
+                                        <button type="submit" class="btn btn-primary esperanza flex-grow-1 gordito ojo fw-bold" name="action" value="update">
+                                            <i class="fa-solid fa-rotate-right fa-lg ojo2 iblanco "></i>
+                                        </button>
 
-            <div class="col-6 mt-4 ojo">
-                <div class="bg-white shadow rounded-1">
-                    <br>
-                    <div class="ms-3 me-2 mt-1 mb-2">    
-                        <div class="d-flex">
-                            <h3 class="iverde">Titulo dataset</h3><p class="ms-4 mt-2">por Usuario que subio</p>
-                        </div>
-                        <div class="mb-1 mt-1">
-                            <p>Podrias tomar ese codigo y modificarlo para que la base de datos resultante, mantenga igual la tabla user pero agregué otra que llamada dataset donde se almacenen los siguientes datos.</p><h6 class="mt-3 igris">fecha de subida</h6>
-                            
-                        </div>
-                    </div>
-                    <br>
-                </div>
-            </div>
+                                        <form method="POST" action="{{ url_for('update', dataset_id=ds[0]) }}" class="gordito">
+                                            <button type="submit" class="btn btn-primary esperanza flex-grow-1 gordito ojo fw-bold" name="action" value="update">
+                                                <i class="fa-solid fa-rotate-right fa-lg ojo2 iazul"></i> 
+                                            </button>
+                                        </form>
 
-            <div class="col-6 mt-4 ojo">
-                <div class="bg-white shadow rounded-1">
-                    <br>
-                    <div class="ms-3 me-2 mt-1 mb-2">    
-                        <div class="d-flex">
-                            <h3 class="iverde">Titulo dataset</h3><p class="ms-4 mt-2">por Usuario que subio</p>
-                        </div>
-                        <div class="mb-1 mt-1">
-                            <p>Podrias tomar ese codigo y modificarlo para que la base de datos resultante, mantenga igual la tabla user pero agregué otra que llamada dataset donde se almacenen los siguientes datos.</p><h6 class="mt-3 igris">fecha de subida</h6>
-                            
-                        </div>
-                    </div>
-                    <br>
-                </div>
-            </div>
+                                        <form method="POST" action="{{ url_for('delete', dataset_id=ds[0]) }}" class="gordito" onsubmit="return confirm('¿Estás seguro de que deseas eliminar este dataset?');">
+                                            <button type="submit" class="btn btn-primary esperanza flex-grow-1 gordito ojo fw-bold" name="action" value="delete">
+                                                <i class="fa-solid fa-trash fa-lg ojo2 irojo"></i>
+                                            </button>
+                                        </form>
 
-            <div class="col-6 mt-4 ojo">
-                <div class="bg-white shadow rounded-1">
+                                    </div>
+                                </div>
+                            </div>
+                            <br>
+                        </div>
+                        
+                    </div>
+
+                {% endfor %}
+            {% else %}
+                <div class="shadow rounded-1 bg-white mt-4 ojo">
                     <br>
-                    <div class="ms-3 me-2 mt-1 mb-2">    
-                        <div class="d-flex">
-                            <h3 class="iverde">Titulo dataset</h3><p class="ms-4 mt-2">por Usuario que subio</p>
-                        </div>
-                        <div class="mb-1 mt-1">
-                            <p>Podrias tomar ese codigo y modificarlo para que la base de datos resultante, mantenga igual la tabla user pero agregué otra que llamada dataset donde se almacenen los siguientes datos.</p><h6 class="mt-3 igris">fecha de subida</h6>
-                            
-                        </div>
+                    <div class="ms-4 me-4 mt-1 mb-2">
+                        <p>No se encontraron datasets.</p>
                     </div>
                     <br>
                 </div>
-            </div>
+            {% endif %}
+
         </div>
     </div>
 </div>

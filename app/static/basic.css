@@ -1,6 +1,6 @@
 :root {
-    --principal: #00711c;
-    --principal2:rgba(0, 165, 41, 0.256)d;
+    --principal: #03b600;
+    --principal2:rgba(255, 255, 255, 0.256)d;
     --principallight: #5cab60d7; 
     --secundario: #00b41e;
     --secundariolight: #63de7b6a;
@@ -9,11 +9,11 @@
 
 .btn-primary {
     --bs-btn-color: #fff;
-    --bs-btn-bg: #4dfd0d;
-    --bs-btn-border-color: #4dfd0d;
+    --bs-btn-bg: #ffffff;
+    --bs-btn-border-color: #ffffff;
     --bs-btn-hover-color: #fff;
-    --bs-btn-hover-bg: #45d70b;
-    --bs-btn-hover-border-color: #3dca0a;
+    --bs-btn-hover-bg: #ffffff;
+    --bs-btn-hover-border-color: #ffffff;
     --bs-btn-focus-shadow-rgb: 49, 132, 253;
     --bs-btn-active-color: #fff;
     --bs-btn-active-bg: #34ca0a;
@@ -63,11 +63,11 @@ h1 {
 }
 
 .iazul {
-    color: var(--principal);
+    color: #51cbe1;
 }
 
 .irojo {
-    color: var(--secundario);
+    color: #de0030;
 }
 
 .swal-overlay {
@@ -306,6 +306,26 @@ h1 {
     border-color: var(--principal);
     box-shadow: 0 0 0 0.2rem var(--principal2);
     animation: big 2s infinite;
+}
+
+@keyframes big2 {
+    0% {
+        transform: scale(1.2);
+    }
+
+    50% {
+        transform: scale(1.4);
+    }
+
+    100% {
+        transform: scale(1.2);
+    }
+}
+
+.big2 {
+    border-color: var(--principal);
+    box-shadow: 0 0 0 0.2rem var(--principal2);
+    animation: big2 2s infinite;
 }
 
 @keyframes shrink {

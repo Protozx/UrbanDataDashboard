@@ -1,6 +1,6 @@
 #app/routes.py
 
-from flask import render_template, redirect, url_for, flash, request, abort, send_from_directory, session
+from flask import render_template, redirect, url_for, flash, request, abort, send_from_directory, session,jsonify
 from flask_login import login_user, login_required, logout_user, current_user
 from . import app, bcrypt, get_db
 from .models import User
@@ -215,10 +215,6 @@ def search():
     return render_template('browse.html', datasets=datasets, search_query=search_query, recomendaciones_tags=recomendaciones_tags)
     
 
-@app.route('/profile', methods=['GET', 'POST'])
-@login_required
-def profile():
-    return render_template('profile.html')
 
 
 @app.route('/view/<int:dataset_id>', methods=['GET', 'POST'])
@@ -328,6 +324,83 @@ def pdf_route():
 @app.route("/reports/<path:pdf_name>", methods=["GET"])
 def serve_pdf(pdf_name):
     return send_from_directory("reports", pdf_name)
+
+
+@app.route("/delete/<int:dataset_id>", methods=['POST'])
+@login_required
+def delete(dataset_id):
+    db = get_db()
+    cursor = db.cursor()
+
+    action = request.form.get('action')
+    if action == 'delete':
+        # Verificar que el dataset pertenece al usuario actual
+        cursor.execute('SELECT * FROM datasets WHERE id = ? AND user_id = ?', (dataset_id, current_user.id))
+        dataset = cursor.fetchone()
+        if not dataset:
+            flash('Dataset no encontrado o no tienes permisos para eliminarlo.', 'danger')
+            return redirect(url_for('profile'))
+
+        # Eliminar el registro de la base de datos
+        cursor.execute('DELETE FROM datasets WHERE id = ?', (dataset_id,))
+        db.commit()
+
+        # Eliminar archivos asociados
+        # Eliminar archivo principal
+        for file in os.listdir(DATASET_DIRECTORY):
+            base, ext = os.path.splitext(file)
+            if base == str(dataset_id):
+                file_path = os.path.join(DATASET_DIRECTORY, file)
+                if os.path.exists(file_path):
+                    os.remove(file_path)
+                break
+
+        # Eliminar reporte PDF si existe
+        report_file = os.path.join(REPORT_DIRECTORY, f"{dataset_id}.pdf")
+        if os.path.exists(report_file):
+            os.remove(report_file)
+
+        # Eliminar dataset preprocesado si existe
+        processed_file = os.path.join(PROCESSED_DIRECTORY, f"{dataset_id}.csv")
+        if os.path.exists(processed_file):
+            os.remove(processed_file)
+
+        flash('Dataset eliminado correctamente.', 'success')
+    else:
+        flash('Acción no válida.', 'danger')
+
+    return redirect(url_for('profile'))
+
+@app.route("/update/<int:dataset_id>", methods=['POST'])
+@login_required
+def update(dataset_id):
+    # Lógica para actualizar el dataset
+    # Puedes redirigir a una página de edición o manejarlo aquí mismo
+    flash('Dataset actualizado', 'info')
+    return redirect(url_for('view', dataset_id=dataset_id))
+
+
+@app.route('/profile', methods=['GET', 'POST'])
+@login_required
+def profile():
+    db = get_db()
+    cursor = db.cursor()
+    
+    cursor.execute('''
+        SELECT datasets.id, datasets.name, datasets.description, datasets.upload_date, datasets.tag, datasets.size
+        FROM datasets
+        JOIN users ON datasets.user_id = users.id
+        WHERE users.username = ?
+        ORDER BY datasets.upload_date DESC
+    ''', (current_user.username,))
+
+            
+    datasets = cursor.fetchall()        
+
+    return render_template('profile.html', datasets=datasets)
+    
+
+
 
 
 
