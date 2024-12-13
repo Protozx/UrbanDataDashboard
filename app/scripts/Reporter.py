@@ -20,7 +20,7 @@ class ReportGenerator:
         
         # Cargar datos con un encoding compatible
         self.df = pd.read_csv(self.csv_input_path, encoding='latin-1')
-        # Intentamos que todas las columnas numéricas se conviertan a float si posible
+        # Intentamos que todas las columnas numéricas se conviertan a float si es posible
         for c in self.df.columns:
             try:
                 self.df[c] = self.df[c].str.strip()  # Eliminar espacios
@@ -50,7 +50,6 @@ class ReportGenerator:
         doc.build(self.elements)
         
     def _add_general_summary(self):
-        self.elements.append(Paragraph("Resumen estadístico general", self.style_heading))
         self.elements.append(Spacer(1, 12))
         
         for col in self.df.columns:
@@ -63,7 +62,8 @@ class ReportGenerator:
             for idx, val in desc.items():
                 data.append([idx, str(val)])
             
-            t = Table(data, hAlign='LEFT')
+            # Centramos la tabla
+            t = Table(data, hAlign='CENTER')
             t.setStyle(TableStyle([
                 ('BACKGROUND',(0,0),(-1,0), colors.grey),
                 ('TEXTCOLOR',(0,0),(-1,0), colors.whitesmoke),
@@ -133,7 +133,8 @@ class ReportGenerator:
         data = [["Categoría", "Frecuencia"]]
         for idx, val in value_counts.items():
             data.append([str(idx), str(val)])
-        t = Table(data, hAlign='LEFT')
+        # Centramos la tabla
+        t = Table(data, hAlign='CENTER')
         t.setStyle(TableStyle([
             ('BACKGROUND',(0,0),(-1,0), colors.grey),
             ('TEXTCOLOR',(0,0),(-1,0), colors.whitesmoke),
@@ -153,7 +154,8 @@ class ReportGenerator:
         ax.set_title("Valores faltantes")
         
         img_path = self._save_fig(col, "_missing")
-        self.elements.append(Image(img_path, width=400, height=200))
+        # Centramos la imagen
+        self.elements.append(Image(img_path, width=400, height=200, hAlign='CENTER'))
         self.elements.append(Spacer(1, 12))
         plt.close(fig)
         
@@ -173,7 +175,8 @@ class ReportGenerator:
             ax.boxplot(data, vert=False)
         ax.set_title(f"Gráfica de caja para {col}")
         img_path = self._save_fig(col, filename_suffix+"_box")
-        self.elements.append(Image(img_path, width=400, height=200))
+        # Centramos la imagen
+        self.elements.append(Image(img_path, width=400, height=200, hAlign='CENTER'))
         self.elements.append(Spacer(1, 12))
         plt.close(fig)
         
@@ -192,7 +195,8 @@ class ReportGenerator:
             ax.legend()
         
         img_path = self._save_fig(col, "_trends")
-        self.elements.append(Image(img_path, width=400, height=200))
+        # Centramos la imagen
+        self.elements.append(Image(img_path, width=400, height=200, hAlign='CENTER'))
         self.elements.append(Spacer(1, 12))
         plt.close(fig)
         
@@ -204,7 +208,8 @@ class ReportGenerator:
             ax.set_title(f"Distribución de {col}")
         
         img_path = self._save_fig(col, "_pie")
-        self.elements.append(Image(img_path, width=400, height=200))
+        # Centramos la imagen
+        self.elements.append(Image(img_path, width=400, height=200, hAlign='CENTER'))
         self.elements.append(Spacer(1, 12))
         plt.close(fig)
         
@@ -241,7 +246,6 @@ def borrar_contenido_carpeta(direccion):
         print("La dirección proporcionada no es una carpeta.")
 
 def statistics_pdf(id, titulo, dataset_directory, report_directory):
-    report = initialize_report(titulo + " de la isla", id, dataset_directory, report_directory)
+    report = initialize_report("Reporte de " + titulo + " en la isla", id, dataset_directory, report_directory)
     report.generate_report()
     borrar_contenido_carpeta("temp_images")
-    
