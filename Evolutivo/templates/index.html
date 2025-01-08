@@ -1,0 +1,65 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="container-fluid mt-3">
+  <h1 class="mb-4">Mi Dashboard</h1>
+
+  <!-- Botón para añadir nuevos elementos al grid -->
+  <button id="add-widget-btn" class="btn btn-success mb-3">Agregar Widget</button>
+
+  <!-- Contenedor de Gridstack -->
+  <div class="grid-stack" id="my-grid"></div>
+  </div>
+
+<!-- Modal para configurar el tipo de gráfica -->
+<div
+  class="modal fade"
+  id="chartConfigModal"
+  tabindex="-1"
+  aria-labelledby="chartConfigModalLabel"
+  aria-hidden="true"
+>
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="chartConfigModalLabel">Configurar Gráfica</h5>
+        <button
+          type="button"
+          class="btn-close"
+          data-bs-dismiss="modal"
+          aria-label="Close"
+        ></button>
+      </div>
+      <div class="modal-body">
+        <form id="chartConfigForm">
+          <div class="mb-3">
+            <label for="chartTypeSelect" class="form-label">Tipo de Gráfica</label>
+            <select class="form-select" id="chartTypeSelect" required>
+              <option value="" selected disabled>Seleccione...</option>
+              <option value="bar">Gráfica de Barras</option>
+              <option value="pie">Gráfica Circular</option>
+            </select>
+          </div>
+          <input type="hidden" id="currentWidgetId" />
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button
+          type="button"
+          class="btn btn-secondary"
+          data-bs-dismiss="modal"
+        >
+          Cerrar
+        </button>
+        <button
+          type="button"
+          class="btn btn-primary"
+          id="saveChartConfig"
+          data-bs-dismiss="modal"
+        >
+          Guardar
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

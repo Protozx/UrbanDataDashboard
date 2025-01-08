@@ -1,0 +1,32 @@
+/* Ajustes de la barra lateral */
+.sidebar {
+    width: 55px;
+    min-height: 100vh;
+    position: fixed;
+    left: 0;
+    top: 0;
+  }
+  
+  .main-content {
+    margin-left: 55px;
+    padding: 20px;
+  }
+  
+  /* Ajustes de la Grid */
+  .grid-stack {
+    background: #eeeeee; /* Un gris claro */
+    height: 800px; /* Ajusta según tus necesidades */
+  }
+  
+  /* Para que el canvas de Chart.js se adapte al tamaño del widget */
+  .grid-stack-item-content canvas {
+    width: 100% !important;
+    height: 100% !important;
+  }
+
+
+
+  .bg-black {
+    background-color: black;
+  }
+  
