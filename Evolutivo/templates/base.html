@@ -105,6 +105,12 @@
     ></script>
 
     <script defer src="{{ url_for('static', filename='js/grid.js') }}"></script>
+
+    {% for js_file in choices_js_files %}
+        <script defer src="{{ url_for('static', filename=js_file) }}"></script>
+    {% endfor %}
+
+
   </head>
   <body class="bg-grey">
     <!-- Barra lateral -->

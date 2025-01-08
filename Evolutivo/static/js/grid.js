@@ -5,24 +5,38 @@ $(document).ready(function () {
     });
     //grid.addWidget({w: 2, content: 'item 1'});
 
-    let widgetCounter = 0; // Contador global para IDs dinámicos
+    let widgetCounter = -1; // Contador global para IDs dinámicos
 
     $(document).on("click", "#add-widget", function () {
         // Generar un ID dinámico basado en el contador
-        widgetCounter = widgetCounter + 1
-
-        // Crear el widget con su ID
+        widgetCounter = widgetCounter + 1;
+    
+        // Crear el widget con su ID, incluyendo el tache
         let widget = grid.addWidget(`
         <div id="widget-${widgetCounter}" class="grid-stack-item">
           <div class="grid-stack-item-content shadow rounded-2 bg-white m-1 d-flex align-items-center justify-content-center w-95 h-95">
             <i class="fa-solid fa-chart-simple fa-2xl big-1 iazul widget" data-number="${widgetCounter}"></i>
+            <span class="fa-solid fa-xmark text-danger" style="position: absolute; top: 0; right: 0; cursor: pointer;" data-remove="${widgetCounter}"></span>
           </div>
         </div>`,
             { w: 2, h: 2 }); // Dimensiones del widget
-
+    
         // Opcional: imprimir el ID para verificar
         console.log("Widget añadido con ID:", widgetCounter);
     });
+    
+    // Función para eliminar un widget al hacer clic en el tache
+    $(document).on("click", ".fa-xmark", function () {
+        let widgetId = $(this).data('remove');
+        let widgetElement = $('#widget-' + widgetId);
+
+        grid.removeWidget(widgetElement, true, true);
+        var widget = grid.getGridItems()[widgetId];  // Reemplaza 'indice' por el índice del widget
+        grid.removeWidget(widget);
+        //widgetElement.addClass("d-none");
+        //grid.removeAll();
+    });
+
 
     // In your Javascript (external .js resource or <script> tag)
 

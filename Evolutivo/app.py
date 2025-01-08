@@ -1,5 +1,5 @@
 from flask import Flask, render_template, jsonify, request
-import random
+import random, os
 
 app = Flask(__name__)
 
@@ -35,6 +35,13 @@ def get_chart_data():
         }
 
     return jsonify(data)
+
+@app.context_processor
+def inject_js_files():
+    # Obtener todos los archivos .js en la carpeta 'choices'
+    js_folder = os.path.join(app.static_folder, 'js', 'choices')
+    js_files = [f'js/choices/{file}' for file in os.listdir(js_folder) if file.endswith('.js')]
+    return {'choices_js_files': js_files}
 
 if __name__ == "__main__":
     app.run(debug=True)
