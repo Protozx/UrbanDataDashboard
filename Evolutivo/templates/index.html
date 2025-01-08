@@ -1,65 +1,91 @@
-{% extends "base.html" %}
-{% block content %}
-<div class="container-fluid mt-3">
-  <h1 class="mb-4">Mi Dashboard</h1>
-
-  <!-- Botón para añadir nuevos elementos al grid -->
-  <button id="add-widget-btn" class="btn btn-success mb-3">Agregar Widget</button>
-
-  <!-- Contenedor de Gridstack -->
-  <div class="grid-stack" id="my-grid"></div>
+{% extends "base.html" %} {% block content %}
+<div class="container-fluid mt-1">
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <h1 class="mb-0">Mi Dashboard</h1>
+    <i
+      id="add-widget"
+      class="fa-solid fa-circle-plus fa-2xl inegro icon-black"
+    ></i>
   </div>
 
-<!-- Modal para configurar el tipo de gráfica -->
-<div
-  class="modal fade"
-  id="chartConfigModal"
-  tabindex="-1"
-  aria-labelledby="chartConfigModalLabel"
-  aria-hidden="true"
->
-  <div class="modal-dialog modal-dialog-centered">
+
+  <!-- pruebas -->
+
+  
+
+
+
+  <!-- Contenedor de Gridstack -->
+  <div class="grid-stack"></div>
+
+  
+
+
+
+
+
+  <!-- Botón para abrir el modal -->
+
+
+<!-- Modal -->
+<div class="modal fade" id="miModal" tabindex="-1" aria-labelledby="miModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
     <div class="modal-content">
+      <!-- Cabecera del modal -->
       <div class="modal-header">
-        <h5 class="modal-title" id="chartConfigModalLabel">Configurar Gráfica</h5>
-        <button
-          type="button"
-          class="btn-close"
-          data-bs-dismiss="modal"
-          aria-label="Close"
-        ></button>
+        <h5 class="modal-title" id="miModalLabel">Widget - 1</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
-      <div class="modal-body">
-        <form id="chartConfigForm">
-          <div class="mb-3">
-            <label for="chartTypeSelect" class="form-label">Tipo de Gráfica</label>
-            <select class="form-select" id="chartTypeSelect" required>
-              <option value="" selected disabled>Seleccione...</option>
-              <option value="bar">Gráfica de Barras</option>
-              <option value="pie">Gráfica Circular</option>
-            </select>
-          </div>
-          <input type="hidden" id="currentWidgetId" />
-        </form>
+      <!-- Cuerpo del modal -->
+      <div id="config-form" class="modal-body">
+        
+        <div class="mb-4">
+            <label for="title" class="form-label">Title</label>
+            <input type="text" class="form-control custom-input" id="username" name="username" required>
+        
+        </div>
+
+        <div class="mb-4">
+          <label for="source-select" class="form-label">Data source</label>
+          <select id="source-select" class="select-source" name="state" style="width: 100%">>
+            <option value="source-1">Estacion Davis 1</option>
+          </select>
+        </div>
+
+        <div class="mb-4">
+          <label for="data-select" class="form-label">Attribute</label>
+          <select id="data-select" class="select-source" name="state" style="width: 100%">
+            <option value='{"id": "data-1", "type": "escalar", "unit": "µg/m³"}'>PM10</option>
+            <option value='{"id": "data-2", "type": "intervalo", "unit": "m/s"}'>Dirección de viento</option>
+          </select>
+        </div>
+      
+      
+        
       </div>
+      <!-- Pie del modal -->
       <div class="modal-footer">
-        <button
-          type="button"
-          class="btn btn-secondary"
-          data-bs-dismiss="modal"
-        >
-          Cerrar
-        </button>
-        <button
-          type="button"
-          class="btn btn-primary"
-          id="saveChartConfig"
-          data-bs-dismiss="modal"
-        >
-          Guardar
-        </button>
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+        <button type="button" class="btn btn-primary">Guardar cambios</button>
       </div>
     </div>
   </div>
 </div>
-{% endblock %}
+
+
+
+
+
+  
+
+
+
+
+
+
+ 
+
+
+
+  {% endblock %}
+</div>

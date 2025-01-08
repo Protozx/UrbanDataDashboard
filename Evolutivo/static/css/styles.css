@@ -1,32 +1,56 @@
 /* Ajustes de la barra lateral */
 .sidebar {
-    width: 55px;
-    min-height: 100vh;
-    position: fixed;
-    left: 0;
-    top: 0;
-  }
-  
-  .main-content {
-    margin-left: 55px;
-    padding: 20px;
-  }
-  
-  /* Ajustes de la Grid */
-  .grid-stack {
-    background: #eeeeee; /* Un gris claro */
-    height: 800px; /* Ajusta según tus necesidades */
-  }
-  
-  /* Para que el canvas de Chart.js se adapte al tamaño del widget */
-  .grid-stack-item-content canvas {
-    width: 100% !important;
-    height: 100% !important;
-  }
+  width: 55px;
+  min-height: 100vh;
+  position: fixed;
+  left: 0;
+  top: 0;
+}
+
+.main-content {
+  margin-left: 55px;
+  padding: 20px;
+}
+
+/* Ajustes de la Grid */
+.grid-stack {
+  background: #eeeeee; /* Un gris claro */
+  height: 800px; /* Ajusta según tus necesidades */
+}
+
+/* Para que el canvas de Chart.js se adapte al tamaño del widget */
+.grid-stack-item-content canvas {
+  width: 100% !important;
+  height: 100% !important;
+  background-color: #ffffff;
+}
+
+.bg-grey {
+  background: #eeeeee;
+}
+
+.bg-black {
+  background-color: black;
+}
+
+.bg-white {
+  background-color: rgb(255, 255, 255);
+}
 
 
+.custom-input {
+  background-color: #f7f7f77a;
+  color: #000000ac;
+  /* Este es el color primary de Bootstrap */
+  border-color: #acacaca2;
+  /* Este es el color primary de Bootstrap */
+}
 
-  .bg-black {
-    background-color: black;
-  }
-  
+.custom-input:focus {
+  background-color: rgb(255, 255, 255);
+  color: var(--principal);
+  border-color: var(--secundario);
+  /* Este es el color primary de Bootstrap */
+  box-shadow: 0 0 0 0.2rem var(--secundariolight);
+  /* Este es el estilo de foco de Bootstrap con el color primary */
+}

@@ -17,7 +17,9 @@
 }
 
 
-
+.big-1 {
+    transform: scale(1.5);
+}
 
 
 .iazul {
@@ -26,4 +28,8 @@
 
 .iblanco {
     color: #ffffff;
+}
+
+.inegro {
+    color: #000000;
 }

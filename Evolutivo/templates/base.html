@@ -73,13 +73,19 @@
       referrerpolicy="no-referrer"
     />
 
-
-
-
-
-
-
-
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js"
+      integrity="sha512-2ImtlRlf2VVmiGZsjm9bEyhjGW4dU7B6TNwh/hx/iSByxNENtj3WVE6o/9Lj4TJeVXPi4bnOIMXFIJJAeufa0A=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    ></script>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/css/select2.min.css"
+      integrity="sha512-nMNlpuaDPrqlEls3IX/Q56H36qvBASwb3ipuo3MxeWbsQB1881ox0cRv7UPTgBlriqoynt35KjEwgGUeUXIPnw=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    />
 
     <!-- Script propio -->
     <!-- Estilos propios -->
@@ -97,15 +103,15 @@
       defer
       src="{{ url_for('static', filename='js/animations.js') }}"
     ></script>
-  
+
+    <script defer src="{{ url_for('static', filename='js/grid.js') }}"></script>
   </head>
-  <body>
+  <body class="bg-grey">
     <!-- Barra lateral -->
     <nav
       class="navbar navbar-expand-lg navbar-dark bg-black flex-column align-items-start sidebar"
     >
       <div class="container-fluid flex-column">
-        
         <div class="collapse navbar-collapse" id="sidebarMenu">
           <ul class="navbar-nav flex-column">
             <li class="nav-item">
@@ -118,9 +124,10 @@
               <i class="fa-solid fa-pen-clip fa-lg mt-5 ms-1 iblanco icon"></i>
             </li>
             <li class="nav-item">
-              <i class="fa-solid fa-floppy-disk fa-lg mt-5 ms-1 iblanco icon"></i>
+              <i
+                class="fa-solid fa-floppy-disk fa-lg mt-5 ms-1 iblanco icon"
+              ></i>
             </li>
-
           </ul>
         </div>
       </div>
