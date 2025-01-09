@@ -48,8 +48,7 @@ $(document).ready(function() {
 
 
     $(document).on('change', '#chart-type-select', function() {
-        // Obtener el valor seleccionado
-        alert(12);
+        
         var selectedChartType = $(this).val();
     
         switch (selectedChartType) {

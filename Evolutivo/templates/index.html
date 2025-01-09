@@ -45,16 +45,21 @@
         
         </div>
 
+
+        <input type="hidden" id="current-id" value="">
+
         <div class="mb-4">
           <label for="source-select" class="form-label">Data source</label>
           <select id="source-select" class="select-source" name="state" style="width: 100%">>
+            <option></option>
             <option value="source-1">Estacion Davis 1</option>
           </select>
         </div>
 
         <div class="mb-4">
           <label for="data-select" class="form-label">Attribute</label>
-          <select id="data-select" class="select-source" name="state" style="width: 100%">
+          <select id="data-select" class="select-source" name="state" style="width: 100%" placeholder="Choose an attribute">
+            <option></option>
             <option value='{"id": "data-1", "type": "escalar", "unit": "µg/m³"}'>PM10</option>
             <option value='{"id": "data-2", "type": "intervalo", "unit": "m/s"}'>Dirección de viento</option>
           </select>
