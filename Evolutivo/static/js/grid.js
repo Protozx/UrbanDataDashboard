@@ -30,8 +30,10 @@ $(document).ready(function () {
         let widgetId = $(this).data('remove');
         let widgetElement = $('#widget-' + widgetId);
 
-        grid.removeWidget(widgetElement, true, true);
-        var widget = grid.getGridItems()[widgetId];  // Reemplaza 'indice' por el índice del widget
+        //grid.removeWidget(widgetElement, true, true);
+        var widgetIndex = widgetElement.index();
+        var widget = grid.getGridItems()[widgetIndex];  // Reemplaza 'indice' por el índice del widget
+        
         grid.removeWidget(widget);
         //widgetElement.addClass("d-none");
         //grid.removeAll();

@@ -43,5 +43,16 @@ def inject_js_files():
     js_files = [f'js/choices/{file}' for file in os.listdir(js_folder) if file.endswith('.js')]
     return {'choices_js_files': js_files}
 
+
+@app.route('/query', methods=['POST'])
+def handle_query():
+    # Aquí puedes procesar los datos recibidos si es necesario
+    # data = request.get_json()
+
+    # Devuelve la palabra "Verónica"
+    return jsonify("Verónica")
+
+
+
 if __name__ == "__main__":
     app.run(debug=True)
