@@ -1,26 +1,7 @@
 #app/routes.py
 
-from flask import render_template, redirect, url_for, flash, request, abort, send_from_directory, session,jsonify
-from flask_login import login_user, login_required, logout_user, current_user
-from . import app, bcrypt, get_db
-from .models import User
-import random, os, json
-from datetime import datetime
-
-from app.scripts.Reporter import statistics_pdf
-from app.scripts.Cleaner import proccessed_pdf
-
-DATASET_DIRECTORY = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'datasets')
-REPORT_DIRECTORY = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'reports')
-PROCESSED_DIRECTORY = os.path.join(DATASET_DIRECTORY, 'processed')
-
-
-if not os.path.exists(DATASET_DIRECTORY):
-    os.makedirs(DATASET_DIRECTORY)
-if not os.path.exists(REPORT_DIRECTORY):
-    os.makedirs(REPORT_DIRECTORY)
-if not os.path.exists(PROCESSED_DIRECTORY):
-    os.makedirs(PROCESSED_DIRECTORY)
+from .imports import *
+from .plots import *
 
 
 @app.route('/')
@@ -458,67 +439,14 @@ def inject_js_files():
 def handle_query():
     try:
         request_data = request.get_json()
-        # Extraer los datos necesarios del JSON
-        color = request_data.get('color')
-        dataset_id = request_data.get('id')  # Asume que 'id' es el ID del dataset
-        column_name = request_data.get('name')
-        plot_type = request_data.get('name') # Para decidir que funcion usar 
-
-        if not dataset_id or not column_name:
-            return jsonify({'error': 'Dataset ID and column name are required'}), 400
-
-        # Fetch dataset path
-        db = get_db()
-        cursor = db.cursor()
-        cursor.execute("SELECT id FROM datasets WHERE id = ?", (dataset_id,))
-        dataset = cursor.fetchone()
-
-        if not dataset:
-            return jsonify({'error': 'Dataset not found'}), 404
-
-        dataset_file = None
-        for file in os.listdir(DATASET_DIRECTORY):
-            if file.startswith(str(dataset_id)):
-                dataset_file = os.path.join(DATASET_DIRECTORY, file)
-                break
-
-        if not dataset_file:
-            return jsonify({'error': 'Dataset file not found'}), 404
-
-        # Load the dataset
-        import pandas as pd
-        file_extension = os.path.splitext(dataset_file)[1]
-
-        if file_extension == '.csv':
-            df = pd.read_csv(dataset_file, encoding='latin-1')
-        elif file_extension in ['.xlsx', '.xls']:
-            df = pd.read_excel(dataset_file)
-        elif file_extension == '.json':
-            df = pd.read_json(dataset_file)
-        elif file_extension == '.txt':
-            df = pd.read_csv(dataset_file, delimiter='\t', encoding='latin-1')
+        plot_type = request_data.get('plot')
+        
+        if(plot_type == "timeseries"):
+            return timeseries(request_data)
+        
         else:
-            return jsonify({'error': 'Unsupported file format'}), 400
-
-        if column_name not in df.columns:
-            return jsonify({'error': f'Column {column_name} not found in dataset'}), 400
-
-        # Limpiar valores no válidos
-        values = df[column_name].dropna()  # Eliminar valores NaN
-        values = values[values.apply(lambda x: isinstance(x, (int, float)))]  # Solo numéricos
-
-        # Tomar 700 muestras representativas
-        sample_size = 700
-        if len(values) > sample_size:
-            values = values.sample(n=sample_size, random_state=42).sort_index()
-        values = values.tolist()
-
-        return jsonify({
-            'name': column_name,
-            'color': color,
-            'values': values
-        })
-
+            return jsonify({'error': 'Undefined plot type'}), 700
+        
     except Exception as e:
         print("Error:", str(e))  # Depuración de errores
         return jsonify({'error': 'Internal server error'}), 500

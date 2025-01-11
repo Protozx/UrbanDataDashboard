@@ -4,7 +4,7 @@ function Timeseries(dataJson) {
     console.log(dataJson.type) 
     console.log(dataJson.unit)
     console.log(dataJson.name)
-    
+    dataJson.plot = "timeseries";
     
 
     //preprocessiong logic
@@ -27,7 +27,7 @@ function Timeseries(dataJson) {
 
     }
 
-    dataJson.plot = "timeseries";
+    
     //preprocessiong logic
     
     active_json =  dataJson;
