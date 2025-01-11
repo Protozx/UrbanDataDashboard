@@ -4,7 +4,7 @@ from flask import render_template, redirect, url_for, flash, request, abort, sen
 from flask_login import login_user, login_required, logout_user, current_user
 from . import app, bcrypt, get_db
 from .models import User
-import os
+import random, os, json
 from datetime import datetime
 
 from app.scripts.Reporter import statistics_pdf
@@ -96,23 +96,25 @@ def upload():
         archivo = request.files.get('archivo')
 
         if not titulo or not descripcion or not etiquetas or not fecha or not archivo:
-            flash('por favor, completa todos los campos.', 'warning')
+            flash('Por favor, completa todos los campos.', 'warning')
             return render_template('upload.html')
 
         try:
             fecha_elaboracion = datetime.strptime(fecha, '%Y-%m-%d').date()
         except ValueError:
-            flash('formato de fecha inválido.', 'warning')
+            flash('Formato de fecha inválido.', 'warning')
             return render_template('upload.html')
 
         nombre_original = archivo.filename
         extension = os.path.splitext(nombre_original)[1].lower()
         if extension not in ['.csv', '.xlsx', '.xls', '.txt', '.json']:
-            flash('formato de archivo no permitido.', 'warning')
+            flash('Formato de archivo no permitido.', 'warning')
             return render_template('upload.html')
 
         db = get_db()
         cursor = db.cursor()
+
+        # Insertar el dataset en la tabla `datasets`
         cursor.execute('''
             INSERT INTO datasets (user_id, name, description, upload_date, tag, size, has_report)
             VALUES (?, ?, ?, ?, ?, ?, ?)
@@ -120,18 +122,51 @@ def upload():
         db.commit()
         dataset_id = cursor.lastrowid
 
+        # Guardar el archivo en el servidor
         nombre_archivo_final = f"{dataset_id}{extension}"
         ruta_archivo = os.path.join(DATASET_DIRECTORY, nombre_archivo_final)
         archivo.save(ruta_archivo)
 
+        # Leer el archivo y registrar sus columnas como atributos
         tamanio = os.path.getsize(ruta_archivo)
         cursor.execute('UPDATE datasets SET size = ? WHERE id = ?', (tamanio, dataset_id))
         db.commit()
 
-        flash('tu dataset se ha guardado correctamente.', 'success')
+        try:
+            import pandas as pd
+
+            if extension == '.csv':
+                df = pd.read_csv(ruta_archivo)
+            elif extension in ['.xlsx', '.xls']:
+                df = pd.read_excel(ruta_archivo)
+            elif extension == '.json':
+                df = pd.read_json(ruta_archivo)
+            elif extension == '.txt':
+                df = pd.read_csv(ruta_archivo, delimiter='\t')  # Suponiendo un archivo tab-delimited
+
+            for column in df.columns:
+                # Determinar el tipo de dato
+                if pd.api.types.is_numeric_dtype(df[column]):
+                    data_type = 'numeric'
+                else:
+                    data_type = 'nominal'
+
+                # Insertar la columna como atributo en la tabla `attributes`
+                cursor.execute('''
+                    INSERT INTO attributes (dataset_id, column_name, data_type, unit)
+                    VALUES (?, ?, ?, ?)
+                ''', (dataset_id, column, data_type, None))
+            db.commit()
+
+        except Exception as e:
+            flash(f'Error al procesar el archivo: {e}', 'danger')
+            return render_template('upload.html')
+
+        flash('Tu dataset se ha guardado correctamente, y sus atributos han sido registrados.', 'success')
         return redirect(url_for('index'))
 
     return render_template('upload.html')
+
    
 def generar_bigrama(tags):
     # Generar bigramas a partir de una lista de tags
@@ -399,11 +434,6 @@ def profile():
 
     return render_template('profile.html', datasets=datasets)
     
-
-
-
-
-
 def obtener_todas_etiquetas():
     db = get_db()
     cursor = db.cursor()
@@ -412,3 +442,49 @@ def obtener_todas_etiquetas():
     etiquetas = [etiqueta for sublist in etiquetas_dataset for etiqueta in sublist[0].split(',')]
     etiquetas = [etiqueta.strip().lower() for etiqueta in etiquetas if etiqueta.strip()]
     return obtener_recomendaciones(etiquetas, top_n=None) 
+
+
+
+@app.context_processor
+def inject_js_files():
+    # Obtener todos los archivos .js en la carpeta 'choices'
+    js_folder = os.path.join(app.static_folder, 'js', 'choices')
+    js_files = [f'js/choices/{file}' for file in os.listdir(js_folder) if file.endswith('.js')]
+    return {'choices_js_files': js_files}
+
+
+@app.route('/query', methods=['POST'])
+def handle_query():
+    # Aquí puedes procesar los datos recibidos si es necesario
+    # data = request.get_json()
+    fakeData = {
+        "labels": ["January", "February", "March", "April", "May", "June"],
+        "values": [10, 20, 15, 25, 30, 45]
+    }
+    
+    return jsonify(fakeData)
+
+@app.route('/dashboard')
+def dashboard():
+    return render_template('board.html')
+
+@app.route('/get-datasets')
+def get_datasets():
+    db = get_db()
+    cursor = db.cursor()
+    cursor.execute("SELECT id, name FROM datasets")
+    datasets = cursor.fetchall()
+    # Convertir los resultados a un formato JSON apropiado
+    datasets_list = [{'id': dataset[0], 'name': dataset[1]} for dataset in datasets]
+    return jsonify(datasets_list)
+
+@app.route('/get-attributes/<int:dataset_id>')
+def get_attributes(dataset_id):
+    db = get_db()
+    cursor = db.cursor()
+    cursor.execute("SELECT dataset_id, column_name, data_type, unit FROM attributes WHERE dataset_id = ?", (dataset_id,))
+    attributes = cursor.fetchall()
+    # Convertir los resultados a un formato JSON apropiado
+    attributes_list = [{'id': attr[0],'name': attr[1], 'type': attr[2], 'unit': attr[3]} for attr in attributes]
+    return jsonify(attributes_list)
+

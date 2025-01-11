@@ -36,6 +36,11 @@
           <ul class="navbar-nav ms-auto">
             {% if current_user.is_authenticated %}
             <li class="nav-item">
+              <a class="nav-link text-white ojo" href="{{ url_for('dashboard') }}"
+                >Dashboard</a
+              >
+            </li>
+            <li class="nav-item">
               <a class="nav-link text-white ojo" href="{{ url_for('profile') }}"
                 >Perfil</a
               >
@@ -56,6 +61,11 @@
               >
             </li>
             {% else %}
+            <li class="nav-item">
+              <a class="nav-link text-white ojo" href="{{ url_for('dashboard') }}"
+                >Dashboard</a
+              >
+            </li>
             <li class="nav-item">
               <a class="nav-link text-white ojo" href="{{ url_for('login') }}"
                 >Iniciar Sesión</a

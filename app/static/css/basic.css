@@ -1,0 +1,417 @@
+:root {
+    --principal: #03b600;
+    --principal2:rgba(255, 255, 255, 0.256)d;
+    --principallight: #5cab60d7; 
+    --secundario: #00b41e;
+    --secundariolight: #63de7b6a;
+}
+
+
+.btn-primary {
+    --bs-btn-color: #fff;
+    --bs-btn-bg: #ffffff;
+    --bs-btn-border-color: #ffffff;
+    --bs-btn-hover-color: #fff;
+    --bs-btn-hover-bg: #ffffff;
+    --bs-btn-hover-border-color: #ffffff;
+    --bs-btn-focus-shadow-rgb: 49, 132, 253;
+    --bs-btn-active-color: #fff;
+    --bs-btn-active-bg: #34ca0a;
+    --bs-btn-active-border-color: #31be0a;
+    --bs-btn-active-shadow: inset 0 3px 5px rgba(0, 0, 0, 0.125);
+    --bs-btn-disabled-color: #fff;
+    --bs-btn-disabled-bg: #69fd0d;
+    --bs-btn-disabled-border-color: #55fd0d;
+}
+
+body{
+    margin: 0;
+    padding: 0;
+    overflow-x: hidden; /* Evita desbordamiento horizontal */
+    background-color: #eeeeee;
+}
+
+
+
+.navbar {
+    width: 100%; /* Asegura que la navbar ocupe todo el ancho */
+    margin: 0; /* Elimina cualquier margen */
+}
+
+h1 {
+    font-family: "Century Gothic", Arial, sans-serif;
+}
+
+.esperanza {
+    border-radius: 17px;
+}
+
+.gordito {
+    width: 100%;
+}
+
+.iblanco {
+    color: #ffffff;
+}
+
+.igris {
+    color: #bfbfbf;
+}
+
+.iverde {
+    color: #00b436;
+}
+
+.iazul {
+    color: #37bade;
+}
+
+.irojo {
+    color: #de0030;
+}
+
+.swal-overlay {
+    background-color: var(--principal);
+}
+
+.contorna {
+    border: 2px solid var(--secundario);
+    /* Define el color y el grosor del borde */
+    border-radius: 15px;
+    /* Hace que los bordes sean redondos */
+}
+
+
+.square-image {
+    width: 245px;
+    /* Define el ancho deseado para tus imágenes cuadradas */
+    height: 245px;
+    /* Define la altura deseada para tus imágenes cuadradas */
+    overflow: hidden;
+    /* Oculta cualquier parte de la imagen que se desborde del contenedor */
+}
+
+.square-image img {
+    width: 100%;
+    /* Asegura que la imagen ocupe todo el espacio disponible dentro del contenedor */
+    height: auto;
+    /* Mantiene la proporción de la imagen sin distorsionarla */
+}
+
+.tlayuda {
+    width: 324px;
+    /* Define el ancho deseado para tus imágenes cuadradas */
+    height: 324px;
+    /* Define la altura deseada para tus imágenes cuadradas */
+    overflow: hidden;
+    /* Oculta cualquier parte de la imagen que se desborde del contenedor */
+}
+
+.tlayuda img {
+    width: 100%;
+    /* Asegura que la imagen ocupe todo el espacio disponible dentro del contenedor */
+    height: auto;
+    /* Mantiene la proporción de la imagen sin distorsionarla */
+}
+
+.puerco {
+    width: 750px;
+    /* Define el ancho deseado para tus imágenes cuadradas */
+    height: 300px;
+    /* Define la altura deseada para tus imágenes cuadradas */
+    overflow: hidden;
+    /* Oculta cualquier parte de la imagen que se desborde del contenedor */
+}
+
+.p80 {
+    width: 90%;
+    /* Personaliza el ancho según tus necesidades */
+    margin: 0 auto;
+    /* Centra horizontalmente el div */
+}
+
+.barrita {
+    height: 60vh;
+    /* Altura es el 60% de la altura de la ventana */
+    overflow-y: auto;
+    /* Permite el desplazamiento vertical si es necesario */
+}
+
+.number-input {
+    display: flex;
+    align-items: center;
+}
+
+.number-input button {
+    height: 40px;
+    width: 30px;
+    background-color: #F1F1F1;
+    border: none;
+    border-radius: 4px;
+}
+
+.number-input input[type=number] {
+    border: none;
+    text-align: center;
+    width: 50px;
+    height: 40px;
+}
+
+
+.despair {
+    border-radius: 17px;
+    background-color: #ffffff;
+}
+
+.btn-purple {
+    background-color: #ae23ff;
+}
+
+.btn-magenta {
+    background-color: #eb0fa5;
+}
+
+.btn-black {
+    background-color: #000000;
+}
+
+.btn-danger {
+    background-color: #da1515;
+}
+
+.bigshow {
+    font-size: 100px;
+}
+
+.midshow {
+    font-size: 17px;
+}
+
+.custom-input {
+    background-color: #f7f7f77a;
+    color: #000000ac;
+    /* Este es el color primary de Bootstrap */
+    border-color: #acacaca2;
+    /* Este es el color primary de Bootstrap */
+}
+
+.custom-input:focus {
+    background-color: rgb(255, 255, 255);
+    color: var(--principal);
+    border-color: var(--secundario);
+    /* Este es el color primary de Bootstrap */
+    box-shadow: 0 0 0 0.2rem var(--secundariolight);
+    /* Este es el estilo de foco de Bootstrap con el color primary */
+}
+
+.custom-op:hover {
+    background-color: rgb(0, 0, 0);
+}
+
+.menu:hover {
+    background-color: var(--principal);
+}
+
+.deslice::-webkit-slider-thumb {
+    width: 20px; /* Ajusta según lo necesites */
+    height: 25px; /* Asegúrate de que sea un valor igual al del width para que sea redondo */
+    background-color: var(--principal);
+    border-radius: 50%; /* Hace que sea redondo */
+    cursor: pointer; /* Cambia el cursor a una mano cuando está sobre el thumb */
+    -webkit-appearance: none; /* Necesario para que los estilos se apliquen en webkit/browsers basados en Chrome/Safari */
+}
+
+.deslice {
+    -webkit-appearance: none; /* Elimina el estilo por defecto en webkit/browsers basados en Chrome/Safari */
+    height: 5px; /* Puedes ajustarlo a tu gusto */
+    background-color: #000000; /* Puedes ajustarlo a tu gusto */
+    outline: none; /* Elimina el borde que aparece al seleccionar el input */
+    cursor: pointer; /* Cambia el cursor a una mano cuando está sobre el slider */
+}
+
+
+
+.flip-card {
+    transition: transform 0.6s;
+    transform-style: preserve-3d;
+    position: relative;
+}
+
+.flip-card.flip {
+    transform: rotateY(180deg);
+}
+
+/* Opcional: Estilos para el frente y la parte trasera del card */
+.flip-card .card-body {
+    backface-visibility: hidden;
+}
+
+.flip-card.flip .card-body {
+    transform: rotateY(180deg);
+}
+
+
+.card {
+    border: 1px solid #ccc;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+    border-radius: 4px;
+    padding: 10px;
+    margin-bottom: 10px;
+}
+
+.card-title {
+    color: #4CAF50; /* Color verde similar al de Bootstrap 'success' */
+}
+
+.card-body {
+    padding: 10px;
+}
+
+
+
+
+@keyframes pulse {
+    0% {
+        transform: scale(1);
+    }
+
+    50% {
+        transform: scale(1.02);
+    }
+
+    100% {
+        transform: scale(1);
+    }
+}
+
+.pulse {
+    animation: pulse 1.2s infinite;
+}
+
+@keyframes big {
+    0% {
+        transform: scale(1.01);
+    }
+
+    50% {
+        transform: scale(1.01);
+    }
+
+    100% {
+        transform: scale(1.01);
+    }
+}
+
+.big {
+    border-color: var(--principal);
+    box-shadow: 0 0 0 0.2rem var(--principal2);
+    animation: big 2s infinite;
+}
+
+@keyframes big2 {
+    0% {
+        transform: scale(1.2);
+    }
+
+    50% {
+        transform: scale(1.4);
+    }
+
+    100% {
+        transform: scale(1.2);
+    }
+}
+
+.big2 {
+    border-color: var(--principal);
+    box-shadow: 0 0 0 0.2rem var(--principal2);
+    animation: big2 2s infinite;
+}
+
+@keyframes shrink {
+    0% {
+        transform: scale(0.9);
+    }
+
+    50% {
+        transform: scale(0.9);
+    }
+
+    100% {
+        transform: scale(0.9);
+    }
+}
+
+.shrink {
+    animation: shrink 2s infinite;
+}
+
+@keyframes spin {
+    0% {
+        transform: rotate(0deg);;
+    }
+
+    100% {
+        transform: rotate(360deg);;
+    }
+}
+
+.spin {
+    animation: spin 1s infinite;
+}
+
+@keyframes popup {
+    0% {
+        opacity: 0;
+    }
+
+    25% {
+        opacity: 1;
+    }
+
+    75% {
+        opacity: 1;
+    }
+
+    100% {
+        opacity: 0;
+    }
+}
+
+.popup {
+    animation: popup 3s;
+}
+
+@keyframes fadeIn {
+    0% {
+        opacity: 0;
+    }
+
+    100% {
+        opacity: 1;
+    }
+}
+
+.fadeIn {
+    animation: fadeIn 2s;
+}
+
+.fadeIn2 {
+    animation: fadeIn 3s;
+}
+
+.fadeIn3 {
+    animation: fadeIn 4s;
+}
+
+.mi-input::-moz-placeholder {
+    color: #555555;
+}
+
+.mi-input:-ms-input-placeholder {
+    color: #555555;
+}
+
+.mi-input::-webkit-input-placeholder {
+    color: #555555;
+}

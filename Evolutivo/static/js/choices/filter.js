@@ -9,7 +9,7 @@ $(document).ready(function() {
 
         // Verificar el tipo y mostrar la alerta correspondiente
         if (parsedOption.type === "escalar") {
-            alert("delgado");
+            //alert("delgado");
             $('#added-options').remove();
             var newSelectHtml = `
                 <div id="added-options" class="mb-4">
@@ -24,7 +24,7 @@ $(document).ready(function() {
             $('#config-form').append(newSelectHtml);
 
         } else if (parsedOption.type === "intervalo") {
-            alert("gordo");
+            //alert("gordo");
             $('#added-options').remove();
             var newSelectHtml = `
                 <div id="added-options" class="mb-4">
@@ -40,7 +40,7 @@ $(document).ready(function() {
 
 
         } else if (parsedOption.type === "mapa") {
-            alert("mapa");
+            //alert("mapa");
         }
     });
 

@@ -54,6 +54,7 @@ $(document).ready(function () {
         // Asignar el valor al h5 dentro del modal
         $('#miModalLabel').text('Widget ' + dataNumber + ' settings');
         $('#current-id').val(dataNumber);
+        active_id = $('#current-id').val();
         
         // Abrir el modal utilizando Bootstrap 5
         var myModal = new bootstrap.Modal($('#miModal')[0]);

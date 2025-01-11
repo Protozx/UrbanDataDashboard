@@ -1,0 +1,40 @@
+@keyframes pulse {
+    0% {
+        transform: scale(1.1);
+    }
+
+    50% {
+        transform: scale(1.2);
+    }
+
+    100% {
+        transform: scale(1.1);
+    }
+}
+
+.pulse {
+    animation: pulse 1.2s infinite;
+}
+
+
+.big-1 {
+    transform: scale(1.5);
+}
+
+.forbidden {
+    transform: scale(0.8);
+    opacity: 0.2;
+}
+
+
+.iazul {
+    color: #2dbb09;
+}
+
+.iblanco {
+    color: #ffffff;
+}
+
+.inegro {
+    color: #000000;
+}

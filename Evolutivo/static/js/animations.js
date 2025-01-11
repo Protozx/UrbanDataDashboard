@@ -20,5 +20,25 @@ $(document).ready(function () {
     $(this).addClass("inegro");
   });
 
+
+    // Detectar cuando un botón tiene el atributo "disabled"
+    $('button').each(function() {
+        if ($(this).is(':disabled')) {
+            $(this).addClass('forbidden');
+        }
+    });
+
+    // Observa cambios en el atributo "disabled"
+    $(document).on('DOMSubtreeModified', 'button', function() {
+        if ($(this).is(':disabled')) {
+            $(this).removeClass('btn-primary');
+            $(this).addClass('forbidden btn-secondary');
+        } else {
+            $(this).removeClass('forbidden btn-secondary');
+            $(this).addClass('btn-primary');
+        }
+    });
+
+
 });
   

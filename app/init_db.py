@@ -1,4 +1,4 @@
-#app/init_db.py
+# app/init_db.py
 import sqlite3
 import os
 
@@ -7,7 +7,7 @@ DATABASE = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'database.db
 def init_db():
     conn = sqlite3.connect(DATABASE)
     cursor = conn.cursor()
-    
+
     # Crear la tabla de usuarios
     cursor.execute('''
         CREATE TABLE IF NOT EXISTS users (
@@ -31,7 +31,19 @@ def init_db():
             FOREIGN KEY(user_id) REFERENCES users(id)
         )
     ''')
-    
+
+    # Crear la tabla de atributos
+    cursor.execute('''
+        CREATE TABLE IF NOT EXISTS attributes (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            dataset_id INTEGER NOT NULL,
+            column_name TEXT NOT NULL,
+            data_type TEXT NOT NULL,
+            unit TEXT,
+            FOREIGN KEY(dataset_id) REFERENCES datasets(id)
+        )
+    ''')
+
     conn.commit()
     conn.close()
     print('Base de datos inicializada.')
