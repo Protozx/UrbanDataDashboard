@@ -453,16 +453,76 @@ def inject_js_files():
     return {'choices_js_files': js_files}
 
 
+
 @app.route('/query', methods=['POST'])
 def handle_query():
-    # Aquí puedes procesar los datos recibidos si es necesario
-    # data = request.get_json()
-    fakeData = {
-        "labels": ["January", "February", "March", "April", "May", "June"],
-        "values": [10, 20, 15, 25, 30, 45]
-    }
-    
-    return jsonify(fakeData)
+    try:
+        request_data = request.get_json()
+        # Extraer los datos necesarios del JSON
+        color = request_data.get('color')
+        dataset_id = request_data.get('id')  # Asume que 'id' es el ID del dataset
+        column_name = request_data.get('name')
+        plot_type = request_data.get('name') # Para decidir que funcion usar 
+
+        if not dataset_id or not column_name:
+            return jsonify({'error': 'Dataset ID and column name are required'}), 400
+
+        # Fetch dataset path
+        db = get_db()
+        cursor = db.cursor()
+        cursor.execute("SELECT id FROM datasets WHERE id = ?", (dataset_id,))
+        dataset = cursor.fetchone()
+
+        if not dataset:
+            return jsonify({'error': 'Dataset not found'}), 404
+
+        dataset_file = None
+        for file in os.listdir(DATASET_DIRECTORY):
+            if file.startswith(str(dataset_id)):
+                dataset_file = os.path.join(DATASET_DIRECTORY, file)
+                break
+
+        if not dataset_file:
+            return jsonify({'error': 'Dataset file not found'}), 404
+
+        # Load the dataset
+        import pandas as pd
+        file_extension = os.path.splitext(dataset_file)[1]
+
+        if file_extension == '.csv':
+            df = pd.read_csv(dataset_file, encoding='latin-1')
+        elif file_extension in ['.xlsx', '.xls']:
+            df = pd.read_excel(dataset_file)
+        elif file_extension == '.json':
+            df = pd.read_json(dataset_file)
+        elif file_extension == '.txt':
+            df = pd.read_csv(dataset_file, delimiter='\t', encoding='latin-1')
+        else:
+            return jsonify({'error': 'Unsupported file format'}), 400
+
+        if column_name not in df.columns:
+            return jsonify({'error': f'Column {column_name} not found in dataset'}), 400
+
+        # Limpiar valores no válidos
+        values = df[column_name].dropna()  # Eliminar valores NaN
+        values = values[values.apply(lambda x: isinstance(x, (int, float)))]  # Solo numéricos
+
+        # Tomar 700 muestras representativas
+        sample_size = 700
+        if len(values) > sample_size:
+            values = values.sample(n=sample_size, random_state=42).sort_index()
+        values = values.tolist()
+
+        return jsonify({
+            'name': column_name,
+            'color': color,
+            'values': values
+        })
+
+    except Exception as e:
+        print("Error:", str(e))  # Depuración de errores
+        return jsonify({'error': 'Internal server error'}), 500
+
 
 @app.route('/dashboard')
 def dashboard():

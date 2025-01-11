@@ -5,9 +5,24 @@ function Timeseries(dataJson) {
     console.log(dataJson.unit)
     console.log(dataJson.name)
     
+    
 
     //preprocessiong logic
 
+
+    var newSelectHtml = `
+                <label for="colorInput" class="form-label">Choose a color</label>
+                <input type="color" class="form-control form-control-color" id="colorInput" value="#563d7c" title="Choose a colorr"></input>
+            `;
+    $('#added-options').append(newSelectHtml);
+
+    dataJson.color = "#563d7c"
+
+    $('#colorInput').change(function() {
+        dataJson.color = $(this).val();
+    });
+    
+    
     if(1 == 1){
 
     }
@@ -21,12 +36,12 @@ function Timeseries(dataJson) {
 }
 
 
-function RenderSeries(containerId, fakeData, name) {
+function RenderSeries(containerId, data) {
     const container = $(`#${containerId}`);
-    
+
     // Set container dimensions to 95%
     container.css({
-        margin: "auto" // Optional: center the container
+        margin: "auto"
     });
 
     // Create canvas element
@@ -37,18 +52,24 @@ function RenderSeries(containerId, fakeData, name) {
     // Get canvas context
     const ctx = document.getElementById(canvasId).getContext("2d");
 
+    // Calculate min and max for the y-axis
+    const minValue = Math.min(...data.values);
+    const maxValue = Math.max(...data.values);
+    const padding = (maxValue - minValue) * 0.1; // Add 10% padding for better visualization
+
     // Create the chart
     new Chart(ctx, {
         type: "line",
         data: {
-            labels: fakeData.labels,
+            labels: Array.from({ length: data.values.length }, (_, i) => i + 1), // Use indices as labels
             datasets: [{
-                label: name,
-                data: fakeData.values,
-                borderColor: "rgba(75, 192, 192, 1)",
-                backgroundColor: "rgba(75, 192, 192, 0.2)",
+                label: data.name,
+                data: data.values,
+                borderColor: data.color,
+                backgroundColor: data.color,
                 borderWidth: 2,
-                tension: 0.4, // Smooth lines
+                tension: 0.4,
+                pointRadius: 0 
             }]
         },
         options: {
@@ -63,16 +84,18 @@ function RenderSeries(containerId, fakeData, name) {
             scales: {
                 x: {
                     title: {
-                        display: true,
-                        text: "Months"
+                        display: false,
+                        text: "Index"
                     }
                 },
                 y: {
                     title: {
-                        display: true,
+                        display: false,
                         text: "Values"
                     },
-                    beginAtZero: true
+                    suggestedMin: minValue - padding, // Adjust the minimum value
+                    suggestedMax: maxValue + padding, // Adjust the maximum value
+                    beginAtZero: false // Disable forcing zero as the minimum
                 }
             }
         }
@@ -80,19 +103,15 @@ function RenderSeries(containerId, fakeData, name) {
 }
 
 
-
-
-
-function GenerateSeries(id, json){
+function GenerateSeries(id, json) {
     $.ajax({
         url: '/query',           // URL a la que se envía la solicitud
         type: 'POST',            // Método de envío
         contentType: 'application/json', // Tipo de contenido que se está enviando
         data: JSON.stringify(json),  // Convertir el objeto JSON a un string JSON
         success: function(response) { // Función a ejecutar si la solicitud es exitosa
-            //alert('Respuesta: ' + response);
-            $('#placeholder-' + active_id).remove();
-            RenderSeries("widget-body-" + active_id, response, json.name);
+            $('#placeholder-' + id).remove();
+            RenderSeries("widget-body-" + id, response); // Solo pasa la respuesta directamente
         },
         error: function(xhr, status, error) { // Función a ejecutar en caso de error en la solicitud
             alert('Error: ' + error);
