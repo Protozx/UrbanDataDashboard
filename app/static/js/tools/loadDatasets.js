@@ -7,6 +7,7 @@ $(document).ready(function() {
             //alert(JSON.stringify(datasets));
             var $select = $('#source-select');
             $select.empty(); // Limpiar opciones anteriores
+            $select.append($('<option></option>'));
             $.each(datasets, function(index, dataset) {
                 $select.append($('<option></option>').attr('value', dataset.id).text(dataset.name));
             });
@@ -28,6 +29,7 @@ function updateAttributes(datasetId) {
         success: function(attributes) {
             var $select = $('#data-select');
             $select.empty(); // Limpiar opciones anteriores
+            $select.append($('<option></option>'));
             $.each(attributes, function(index, attribute) {
                 $select.append($('<option></option>')
                     .attr('value', JSON.stringify(attribute))

@@ -50,13 +50,16 @@ $(document).ready(function() {
     $(document).on('change', '#chart-type-select', function() {
         
         var selectedChartType = $(this).val();
-    
+        
+        var parsedOption = JSON.parse($('#data-select').val());
+        parsedOption.widgetid = active_id;
+        
         switch (selectedChartType) {
+            
             case 'bar':
                 BarChart();
                 break;
             case 'scatter':
-                var parsedOption = JSON.parse($('#data-select').val());
                 Timeseries(parsedOption);
                 break;
             case 'max':

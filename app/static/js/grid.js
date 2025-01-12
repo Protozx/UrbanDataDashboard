@@ -15,6 +15,7 @@ $(document).ready(function () {
         let widget = grid.addWidget(`
         <div id="widget-${widgetCounter}" class="grid-stack-item">
           <div id="widget-body-${widgetCounter}" class="grid-stack-item-content shadow rounded-2 bg-white m-1 d-flex align-items-center justify-content-center w-95 h-95">
+            <input type="hidden" id="json-${widgetCounter}" value="">
             <i id="placeholder-${widgetCounter}" class="fa-solid fa-chart-simple fa-2xl big-1 iazul widget" data-number="${widgetCounter}"></i>
             <span class="fa-solid fa-xmark text-danger" style="position: absolute; top: 0; right: 0; cursor: pointer;" data-remove="${widgetCounter}"></span>
           </div>
@@ -63,20 +64,47 @@ $(document).ready(function () {
         myModal.show();
     });
 
+    $("#descargar-btn").on("click", function () {
+        // Obtiene el contenido HTML del div con ID "big_container"
+        const divContent = $("#big_container").prop("outerHTML");
+        
+        // Crea un Blob con el contenido
+        const blob = new Blob([divContent], { type: "text/html" });
+        
+        // Crea un enlace temporal para descargar el archivo
+        const link = document.createElement("a");
+        link.href = URL.createObjectURL(blob);
+        link.download = "big_container.html"; // Nombre del archivo
+        link.click();
+        
+        // Limpia el objeto URL para liberar memoria
+        URL.revokeObjectURL(link.href);
+    });
 
-
-
-
-
-
-
-
-
-
-
-
-
-
+    $("#cargar-btn").on("click", function () {
+        // Crear dinámicamente un input file
+        const inputFile = $("<input>", { type: "file", accept: ".html" });
+        
+        // Escuchar el cambio del archivo seleccionado
+        inputFile.on("change", function (event) {
+            const file = event.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function (e) {
+                    const fileContent = e.target.result;
+                    // Sobrescribir el contenido del div
+                    $("#big_container").replaceWith(fileContent);
+                };
+                reader.readAsText(file);
+            }
+        });
+        
+        // Simular clic en el input file para abrir la ventana de selección de archivos
+        inputFile.trigger("click");
+    });
+    
+    
+    
 
 
 

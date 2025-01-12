@@ -4,14 +4,19 @@ function Timeseries(dataJson) {
     console.log(dataJson.type) 
     console.log(dataJson.unit)
     console.log(dataJson.name)
-    dataJson.plot = "timeseries";
+    console.log(dataJson.widgetid)
+
+    widget_id = dataJson.widgetid
+
+    //IMPORTANTE
+    
     
 
     //preprocessiong logic
 
 
     var newSelectHtml = `
-                <label for="colorInput" class="form-label">Choose a color</label>
+                <label for="colorInput" class="form-label mt-4">Choose a color</label>
                 <input type="color" class="form-control form-control-color" id="colorInput" value="#563d7c" title="Choose a colorr"></input>
             `;
     $('#added-options').append(newSelectHtml);
@@ -26,12 +31,15 @@ function Timeseries(dataJson) {
     if(1 == 1){
 
     }
-
     
     //preprocessiong logic
     
-    active_json =  dataJson;
-    active_generate = GenerateSeries;
+    final_json = dataJson;
+    final_json.plot = "timeseries";
+    final_json.generate = 'GenerateTimeseries';
+    active_json = final_json;
+    //$('#json-' + widget_id ).val(JSON.stringify(final_json));
+    
     ActivarGuardar();
 }
 
@@ -103,7 +111,7 @@ function RenderSeries(containerId, data) {
 }
 
 
-function GenerateSeries(id, json) {
+function GenerateTimeseries(id, json) {
     $.ajax({
         url: '/query',           // URL a la que se envía la solicitud
         type: 'POST',            // Método de envío
