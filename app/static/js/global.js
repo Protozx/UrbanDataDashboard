@@ -3,10 +3,13 @@ var active_json;
 var active_generate;
 
 var update_list = []
+var active_list = []
 
 //update_list.push('nuevo elemento');
 
-
+var grid = GridStack.init({
+    margin: 2 // Espacio en píxeles entre los grids
+});
 
 $(document).ready(function() {
     setInterval(function() {

@@ -1,4 +1,9 @@
 $(document).ready(function() {
+
+    $('.select-source').change(function() {
+        DesactivarGuardar();
+    })
+
     $('#data-select').change(function() {
         // Obtener el valor seleccionado
         var selectedOption = $(this).val();
@@ -14,14 +19,15 @@ $(document).ready(function() {
             var newSelectHtml = `
                 <div id="added-options" class="mb-4">
                 <label for="chart-type-select" class="form-label">Type of Chart</label>
-                <select id="chart-type-select" class="select-plot" name="chartType" style="width: 100%">
-                    <option value="statistics">Estadisticas</option>
-                    <option value="scatter">Scatterplot</option>
-                    <option value="box">Caja</option>
+                <select id="chart-type-select" class="select-plot select2" name="chartType" style="width: 100%">
+                    <option></option>
+                    <option value="timeseries">Timeseries</option>
+                    <option value="heatmap">Heatmap</option>
                 </select>
                 </div>
             `;
             $('#config-form').append(newSelectHtml);
+            addedSelect();
 
         } else if (parsedOption.type === "nominal") {
             //alert("gordo");
@@ -29,14 +35,14 @@ $(document).ready(function() {
             var newSelectHtml = `
                 <div id="added-options" class="mb-4">
                 <label for="chart-type-select" class="form-label">Type of Chart</label>
-                <select id="chart-type-select" class="select-plot" name="chartType" style="width: 100%">
-                    <option value="moda">Moda</option>
-                    <option value="bar">Conteo de instancias</option>
-                    <option value="pastel">Distribucion</option>
+                <select id="chart-type-select" class="select-plot select2" name="chartType" style="width: 100%">
+                    <option></option>
+                    <option value="count">Count</option>
                 </select>
                 </div>
             `;
             $('#config-form').append(newSelectHtml);
+            addedSelect();
 
 
         } else if (parsedOption.type === "mapa") {
@@ -53,17 +59,17 @@ $(document).ready(function() {
         
         var parsedOption = JSON.parse($('#data-select').val());
         parsedOption.widgetid = active_id;
+        parsedOption.title = $('#widget-title');
         
         switch (selectedChartType) {
             
-            case 'bar':
-                BarChart();
+            case 'heatmap':
+                Heatmap(parsedOption);
                 break;
-            case 'scatter':
+            case 'timeseries':
                 Timeseries(parsedOption);
                 break;
-            case 'max':
-                MaxValue();
+            case 'count':
                 break;
             default:
                 alert('Seleccione un tipo de gráfica válido.');

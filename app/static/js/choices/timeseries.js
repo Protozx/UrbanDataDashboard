@@ -1,6 +1,7 @@
 function Timeseries(dataJson) {
     
     console.log(dataJson.id) // id del dataset al que pertenece
+    console.log(dataJson.title) 
     console.log(dataJson.type) 
     console.log(dataJson.unit)
     console.log(dataJson.name)

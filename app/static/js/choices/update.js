@@ -1,14 +1,19 @@
 var plot = {};
 
 //DECLARAR TODOS LOS TIPOS DE FUNCION
-plot.GenerateTimeseries = GenerateTimeseries
+plot.GenerateTimeseries = GenerateTimeseries;
+plot.GenerateHeatmap = GenerateHeatmap;
 
 
 
-
-
-
-
+function addedSelect(){
+    $('.select2').select2({
+        width: 'resolve',
+        placeholder: "Select an option",
+        allowClear: false,
+        dropdownParent: $('#miModal') // need to override the changed default
+    });
+}
 
 function ActivarGuardar(){
 
@@ -30,10 +35,10 @@ function updateWidget(id) {
     console.log(`Actualizando el widget con id: ${id}`);
 
 
-    alert(JSON.stringify(json))
+    //alert(JSON.stringify(json))
     if (typeof callback === 'function') {
         callback(id, json); // Ejecuta el código que viene en los parámetros
-        alert(terminé, json.generate)
+        //alert('terminé', json.generate)
     } else {
         console.error('El parámetro no es una función válida.');
     }

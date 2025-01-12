@@ -438,12 +438,14 @@ def inject_js_files():
 @app.route('/query', methods=['POST'])
 def handle_query():
     try:
+        print(request)
         request_data = request.get_json()
         plot_type = request_data.get('plot')
         
         if(plot_type == "timeseries"):
             return timeseries(request_data)
-        
+        elif(plot_type == "heatmap"):
+            return heatmap(request_data)
         else:
             return jsonify({'error': 'Undefined plot type'}), 700
         

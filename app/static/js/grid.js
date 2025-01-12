@@ -1,8 +1,6 @@
 $(document).ready(function () {
 
-    var grid = GridStack.init({
-        margin: 2 // Espacio en píxeles entre los grids
-    });
+    
     //grid.addWidget({w: 2, content: 'item 1'});
 
     let widgetCounter = -1; // Contador global para IDs dinámicos
@@ -23,6 +21,7 @@ $(document).ready(function () {
             { w: 2, h: 2 }); // Dimensiones del widget
     
         // Opcional: imprimir el ID para verificar
+        active_list.push(widgetCounter);
         console.log("Widget añadido con ID:", widgetCounter);
     });
     
@@ -34,7 +33,15 @@ $(document).ready(function () {
         //grid.removeWidget(widgetElement, true, true);
         var widgetIndex = widgetElement.index();
         var widget = grid.getGridItems()[widgetIndex];  // Reemplaza 'indice' por el índice del widget
+        // Encuentra el índice del elemento
         
+        const index = active_list.indexOf(widgetId);
+
+        if (index !== -1) {
+        // Elimina el elemento en ese índice
+        active_list.splice(index, 1);
+        }
+
         grid.removeWidget(widget);
         //widgetElement.addClass("d-none");
         //grid.removeAll();
@@ -43,12 +50,14 @@ $(document).ready(function () {
 
     // In your Javascript (external .js resource or <script> tag)
 
-    $('.select-source').select2({
+    $('.select2').select2({
         width: 'resolve',
         placeholder: "Select an option",
         allowClear: false,
         dropdownParent: $('#miModal') // need to override the changed default
     });
+
+    
 
     $(document).on("click", ".widget", function () {
         // Obtener el valor de data-number
@@ -102,31 +111,31 @@ $(document).ready(function () {
         // Simular clic en el input file para abrir la ventana de selección de archivos
         inputFile.trigger("click");
     });
-    
-    
-    
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+    $("#editar-btn").on("click", function () {
+        toggleAdjustable();
+    });
 
 
 });
 
 
 
+function toggleAdjustable() {
+    // Obtener el estado actual (suponemos que el primer elemento define el estado global)
+    const currentState = grid.engine.nodes[0].noResize || grid.engine.nodes[0].noMove;
 
+    // Cambiar el estado de todos los elementos
+    grid.engine.nodes.forEach(node => {
+        grid.update(node.el, {
+            noResize: !currentState, // Cambiar entre ajustable y no ajustable
+            noMove: !currentState
+        });
+    });
+
+    // Actualizar el grid
+    grid.commit();
+}
 
 
