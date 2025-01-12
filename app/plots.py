@@ -126,6 +126,7 @@ def heatmap(request_data):
     intensity = df[column_name]
     x = df[x_name]
     y = df[y_name]
+    center = [x.mean(), y.mean()]
     
     #values = values[values.apply(lambda x: isinstance(x, (int, float)))]  # Solo numéricos
 
@@ -133,7 +134,10 @@ def heatmap(request_data):
     return jsonify({
         'intensity': intensity.tolist(),
         'x': x.tolist(),
-        'y': y.tolist()
+        'y': y.tolist(),
+        'max_intensity': intensity.max(),
+        'min_intensity': intensity.min(),
+        'center': center
     })
     
 

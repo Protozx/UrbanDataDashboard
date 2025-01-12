@@ -57,4 +57,8 @@ $(document).ready(function() {
         }
     });
 
+    $(document).on("click", "#refresh-all", function () {
+        refreshAll();
+    });
+
 });

@@ -89,6 +89,7 @@ function Heatmap(dataJson) {
 }
 
 
+
 function RenderHeatmap(containerId, data) {
     // Cargar el contenedor del mapa
     const container = document.getElementById(containerId);
@@ -102,15 +103,15 @@ function RenderHeatmap(containerId, data) {
     const map = new maplibregl.Map({
         container: containerId, // ID del contenedor del mapa
         style: 'https://basemaps.cartocdn.com/gl/voyager-gl-style/style.json', // Estilo del mapa
-        center: [0, 0], // Coordenadas iniciales [longitud, latitud]
-        zoom: 2, // Nivel de zoom inicial
+        center: data.center, // Coordenadas iniciales [longitud, latitud]
+        zoom: 10, // Nivel de zoom inicial
     });
 
     // Agregar controles de navegación al mapa
     map.addControl(new maplibregl.NavigationControl(), 'top-right');
 
     map.on('load', function () {
-        // Agregar puntos al mapa como una fuente GeoJSON
+        // Crear un objeto GeoJSON para los datos
         const geoJsonData = {
             type: 'FeatureCollection',
             features: data.x.map((x, index) => ({
@@ -125,35 +126,68 @@ function RenderHeatmap(containerId, data) {
             })),
         };
 
-        // Agregar la fuente al mapa
-        map.addSource('points', {
+        // Agregar la fuente GeoJSON al mapa
+        map.addSource('heatmap-source', {
             type: 'geojson',
             data: geoJsonData,
         });
 
-        // Agregar una capa para renderizar los puntos
+        // Obtener los valores de intensidad máxima y mínima
+        const maxIntensity = data.max_intensity || 1;
+        const minIntensity = data.min_intensity || 0;
+
+        // Agregar la capa del mapa de calor
         map.addLayer({
-            id: 'points-layer',
-            type: 'circle',
-            source: 'points',
+            id: 'heatmap-layer',
+            type: 'heatmap',
+            source: 'heatmap-source',
             paint: {
-                'circle-radius': 6, // Tamaño del círculo ajustado
-                'circle-color': '#ffffff', // Centro blanco del círculo
-                'circle-stroke-width': 2, // Grosor del borde verde
-                'circle-stroke-color': '#7CFC00', // Color del borde verde claro (LawnGreen)
+                // Configuración de la intensidad del calor
+                'heatmap-weight': ['interpolate', ['linear'], ['get', 'intensity'], minIntensity, 0, maxIntensity, 1],
+                // Difusión del calor
+                'heatmap-intensity': ['interpolate', ['linear'], ['zoom'], 0, 1, 22, 3],
+                // Radio de los puntos
+                'heatmap-radius': ['interpolate', ['linear'], ['zoom'], 0, 2, 22, 50],
+                // Opacidad del mapa de calor
+                'heatmap-opacity': ['interpolate', ['linear'], ['zoom'], 0, 1, 22, 0],
+                // Gradiente de colores para la intensidad del calor
+                'heatmap-color': [
+                    'interpolate',
+                    ['linear'],
+                    ['heatmap-density'],
+                    0, 'rgba(33,102,172,0)',
+                    0.2, 'rgb(170, 144, 215)',
+                    0.4, 'rgb(131, 162, 255)',
+                    0.6, 'rgb(64, 228, 212)',
+                    0.8, 'rgb(197, 255, 97)',
+                    1, 'rgb(38, 210, 61)'
+                ],
+            },
+        });
+
+        // Agregar una capa de puntos opcional para visualizar individualmente los datos
+        map.addLayer({
+            id: 'point-layer',
+            type: 'circle',
+            source: 'heatmap-source',
+            paint: {
+                'circle-radius': ['interpolate', ['linear'], ['get', 'intensity'], minIntensity, 3, maxIntensity, 10],
+                'circle-color': 'rgba(0, 0, 0, 0)',
+                'circle-stroke-width': 1,
+                'circle-stroke-color': '#ffffff',
             },
         });
     });
 
-
+    // Ajustar el widget del contenedor
     let widgetElement = $('#widget-' + containerId);
-
     var widgetIndex = widgetElement.index();
     var widget = grid.getGridItems()[widgetIndex];
     grid.update(widget, { noResize: true, noMove: true });
-    alert(containerId + ' ' + widgetIndex)
-
+    //alert(containerId + ' ' + widgetIndex);
 }
+
+
 
 
 

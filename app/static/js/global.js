@@ -14,13 +14,19 @@ var grid = GridStack.init({
 $(document).ready(function() {
     setInterval(function() {
         const now = new Date();
-        console.log(now.toLocaleTimeString());
+        console.log(now.toLocaleTimeString() + ' ' + update_list);
         refresh()
     }, 5000); // 10000 ms = 10 segundos
 });
 
 function refresh() {
     update_list.forEach(function(id) {
+        updateWidget(id);
+    });
+}
+
+function refreshAll() {
+    active_list.forEach(function(id) {
         updateWidget(id);
     });
 }
