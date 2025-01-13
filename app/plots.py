@@ -55,7 +55,7 @@ def timeseries(request_data):
     values = values[values.apply(lambda x: isinstance(x, (int, float)))]  # Solo numéricos
 
     # Tomar 700 muestras representativas
-    sample_size = 700
+    sample_size = 2000
     if len(values) > sample_size:
         values = values.sample(n=sample_size, random_state=42).sort_index()
     values = values.tolist()
@@ -309,7 +309,7 @@ def gauge(request_data):
     print(reading.tolist(), reading);
     
     return jsonify({
-        'reading': reading,
+        'reading': round(reading, 1),
         'min_value': request_data.get('min_value'),
         'max_value': request_data.get('max_value'),
         'color': request_data.get('color')

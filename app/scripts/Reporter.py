@@ -246,6 +246,6 @@ def borrar_contenido_carpeta(direccion):
         print("La dirección proporcionada no es una carpeta.")
 
 def statistics_pdf(id, titulo, dataset_directory, report_directory):
-    report = initialize_report("Reporte de " + titulo + " en la isla", id, dataset_directory, report_directory)
+    report = initialize_report("Reporte automatico de " + titulo + "", id, dataset_directory, report_directory)
     report.generate_report()
     borrar_contenido_carpeta("temp_images")
