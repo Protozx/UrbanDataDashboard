@@ -1,7 +1,7 @@
 $(document).ready(function() {
 
     $('.select-source').change(function() {
-        DesactivarGuardar();
+        //DesactivarGuardar();
     })
 
     $('#data-select').change(function() {
@@ -21,6 +21,7 @@ $(document).ready(function() {
                 <label for="chart-type-select" class="form-label">Type of Chart</label>
                 <select id="chart-type-select" class="select-plot select2" name="chartType" style="width: 100%">
                     <option></option>
+                    <option value="statistic">Statistic</option>
                     <option value="timeseries">Timeseries</option>
                     <option value="averagebar">Average by label (bar)</option>
                     <option value="averagecake">Average by label (cake)</option>
@@ -84,6 +85,9 @@ $(document).ready(function() {
                 break;
             case 'lasttext':
                 Lasttext(parsedOption);
+                break;
+            case 'statistic':
+                Statistic(parsedOption);
                 break;
             default:
                 alert('Seleccione un tipo de gráfica válido.');

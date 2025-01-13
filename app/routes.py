@@ -452,6 +452,8 @@ def handle_query():
             return gauge(request_data)
         elif(plot_type == "lasttext"):
             return lasttext(request_data)
+        elif(plot_type == "statistic"):
+            return statistic(request_data)
         else:
             return jsonify({'error': 'Undefined plot type'}), 700
         

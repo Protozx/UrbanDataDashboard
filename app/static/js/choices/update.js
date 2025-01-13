@@ -7,6 +7,7 @@ plot.GenerateAveragebar = GenerateAveragebar;
 plot.GenerateAveragecake = GenerateAveragecake;
 plot.GenerateGauge = GenerateGauge;
 plot.GenerateLasttext = GenerateLasttext;
+plot.GenerateStatistic = GenerateStatistic;
 
 function addedSelect(){
     $('.select2').select2({

@@ -53,7 +53,7 @@ function Averagebar(dataJson) {
         final_json = {
             id: dataset_id,
             values: values.name,
-            tags: tags.name,
+            tags: tags.name
         };
     
         final_json.plot = "averagebar";
@@ -63,7 +63,7 @@ function Averagebar(dataJson) {
         //final JSON requirements: .generate .plot 
         active_json = final_json;
         
-        //alert(JSON.stringify(final_json));
+        alert(JSON.stringify(final_json));
         ActivarGuardar();
 
     });

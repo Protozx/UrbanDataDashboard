@@ -260,10 +260,6 @@ def lasttext(request_data):
     })
 
 
-
-
-
-
 def gauge(request_data):          
     print("gauge")
     # Extraer los datos necesarios del JSON
@@ -320,6 +316,99 @@ def gauge(request_data):
     })
 
 
+def statistic(request_data):          
+    
+    # Extraer los datos necesarios del JSON
+    dataset_id = request_data.get('id')  # Asume que 'id' es el ID del dataset
+    column_1 = request_data.get('column_1')
+    column_2 = request_data.get('column_2')
+    statistic_name = request_data.get('statistic')
+    print(statistic_name)
+    
+
+    if not dataset_id:
+        return jsonify({'error': 'Dataset ID and column name are required'}), 400
+
+    # Fetch dataset path
+    db = get_db()
+    cursor = db.cursor()
+    cursor.execute("SELECT id FROM datasets WHERE id = ?", (dataset_id,))
+    dataset = cursor.fetchone()
+
+    if not dataset:
+        return jsonify({'error': 'Dataset not found'}), 404
+
+    dataset_file = None
+    for file in os.listdir(DATASET_DIRECTORY):
+        if file.startswith(str(dataset_id)):
+            dataset_file = os.path.join(DATASET_DIRECTORY, file)
+            break
+
+    if not dataset_file:
+        return jsonify({'error': 'Dataset file not found'}), 404
+
+    # Load the dataset
+    import pandas as pd
+    file_extension = os.path.splitext(dataset_file)[1]
+
+    if file_extension == '.csv':
+        df = pd.read_csv(dataset_file, encoding='latin-1')
+    elif file_extension in ['.xlsx', '.xls']:
+        df = pd.read_excel(dataset_file)
+    elif file_extension == '.json':
+        df = pd.read_json(dataset_file)
+    elif file_extension == '.txt':
+        df = pd.read_csv(dataset_file, delimiter='\t', encoding='latin-1')
+    else:
+        return jsonify({'error': 'Unsupported file format'}), 400
+
+
+    # Limpiar valores no válidos
+    df = df.dropna()
+    resultado = 0
+    value_2 = "None"
+    
+    
+    if statistic_name == "Max":
+        resultado = df[column_1].max()
+        if column_2 != "None":
+            value_2 = df.loc[df[column_1] == resultado, column_2].iloc[0]
+    elif statistic_name == "Min":
+        resultado = df[column_1].min()
+        if column_2 != "None":
+            value_2 = df.loc[df[column_1] == resultado, column_2].iloc[0]
+    elif statistic_name == "Mean":
+        resultado = df[column_1].mean()
+    elif statistic_name == "Median":
+        resultado = df[column_1].median()
+    elif statistic_name == "Mode":
+        resultado = df[column_1].mode().iloc[0]  # Devuelve el primer modo si hay varios
+    elif statistic_name == "Variance":
+        resultado = df[column_1].var()
+    else:
+        resultado = "Estadística no reconocida."
+
+    
+    value_1 = round(resultado, 1)
+    
+    if value_2 == "None":
+        graph = 1
+    else: 
+        graph = 2
+    
+    
+    
+
+    return jsonify({
+        'statistic': statistic_name,
+        'value_1': value_1.tolist(),
+        'value_2': value_2,
+        'graph': graph,
+        'color': request_data.get('color'),
+        'column_1': column_1,
+        'column:2': column_2
+    })
+ 
 
 
 
