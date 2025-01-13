@@ -144,6 +144,183 @@ def heatmap(request_data):
 
 
 
+def averagebar(request_data):          
+    print("average bar")
+    # Extraer los datos necesarios del JSON
+    dataset_id = request_data.get('id')  # Asume que 'id' es el ID del dataset
+    values_column = request_data.get('values')
+    labels_column = request_data.get('tags')
+    
+
+    if not dataset_id:
+        return jsonify({'error': 'Dataset ID and column name are required'}), 400
+
+    # Fetch dataset path
+    db = get_db()
+    cursor = db.cursor()
+    cursor.execute("SELECT id FROM datasets WHERE id = ?", (dataset_id,))
+    dataset = cursor.fetchone()
+
+    if not dataset:
+        return jsonify({'error': 'Dataset not found'}), 404
+
+    dataset_file = None
+    for file in os.listdir(DATASET_DIRECTORY):
+        if file.startswith(str(dataset_id)):
+            dataset_file = os.path.join(DATASET_DIRECTORY, file)
+            break
+
+    if not dataset_file:
+        return jsonify({'error': 'Dataset file not found'}), 404
+
+    # Load the dataset
+    import pandas as pd
+    file_extension = os.path.splitext(dataset_file)[1]
+
+    if file_extension == '.csv':
+        df = pd.read_csv(dataset_file, encoding='latin-1')
+    elif file_extension in ['.xlsx', '.xls']:
+        df = pd.read_excel(dataset_file)
+    elif file_extension == '.json':
+        df = pd.read_json(dataset_file)
+    elif file_extension == '.txt':
+        df = pd.read_csv(dataset_file, delimiter='\t', encoding='latin-1')
+    else:
+        return jsonify({'error': 'Unsupported file format'}), 400
+
+
+    # Limpiar valores no válidos
+    df = df.dropna()
+    
+    sample_size = 1400
+
+    if len(df) > sample_size:
+        df = df.sample(n=sample_size, random_state=42).sort_index()
+    
+    aggregated_df = df.groupby(labels_column)[values_column].mean().reset_index()
+
+    values = aggregated_df[values_column]
+    labels = aggregated_df[labels_column]
+
+    return jsonify({
+        'values': values.tolist(),
+        'labels': labels.tolist()
+    })
+    
+
+def lasttext(request_data):          
+    print("lasttext")
+    # Extraer los datos necesarios del JSON
+    dataset_id = request_data.get('id')  # Asume que 'id' es el ID del dataset
+    column = request_data.get('column')
+    color = request_data.get('color')
+    
+
+    if not dataset_id:
+        return jsonify({'error': 'Dataset ID and column name are required'}), 400
+
+    # Fetch dataset path
+    db = get_db()
+    cursor = db.cursor()
+    cursor.execute("SELECT id FROM datasets WHERE id = ?", (dataset_id,))
+    dataset = cursor.fetchone()
+
+    if not dataset:
+        return jsonify({'error': 'Dataset not found'}), 404
+
+    dataset_file = None
+    for file in os.listdir(DATASET_DIRECTORY):
+        if file.startswith(str(dataset_id)):
+            dataset_file = os.path.join(DATASET_DIRECTORY, file)
+            break
+
+    if not dataset_file:
+        return jsonify({'error': 'Dataset file not found'}), 404
+
+    # Load the dataset
+    import pandas as pd
+    file_extension = os.path.splitext(dataset_file)[1]
+
+    if file_extension == '.csv':
+        df = pd.read_csv(dataset_file, encoding='latin-1')
+    elif file_extension in ['.xlsx', '.xls']:
+        df = pd.read_excel(dataset_file)
+    elif file_extension == '.json':
+        df = pd.read_json(dataset_file)
+    elif file_extension == '.txt':
+        df = pd.read_csv(dataset_file, delimiter='\t', encoding='latin-1')
+    else:
+        return jsonify({'error': 'Unsupported file format'}), 400
+    df = df.dropna()
+    reading = df.iloc[-1][column]
+    
+    return jsonify({
+        'color': color,
+        'reading': reading
+    })
+
+
+
+
+
+
+def gauge(request_data):          
+    print("gauge")
+    # Extraer los datos necesarios del JSON
+    dataset_id = request_data.get('id')  # Asume que 'id' es el ID del dataset
+    column = request_data.get('column')
+    
+
+    if not dataset_id:
+        return jsonify({'error': 'Dataset ID and column name are required'}), 400
+
+    # Fetch dataset path
+    db = get_db()
+    cursor = db.cursor()
+    cursor.execute("SELECT id FROM datasets WHERE id = ?", (dataset_id,))
+    dataset = cursor.fetchone()
+
+    if not dataset:
+        return jsonify({'error': 'Dataset not found'}), 404
+
+    dataset_file = None
+    for file in os.listdir(DATASET_DIRECTORY):
+        if file.startswith(str(dataset_id)):
+            dataset_file = os.path.join(DATASET_DIRECTORY, file)
+            break
+
+    if not dataset_file:
+        return jsonify({'error': 'Dataset file not found'}), 404
+
+    # Load the dataset
+    import pandas as pd
+    file_extension = os.path.splitext(dataset_file)[1]
+
+    if file_extension == '.csv':
+        df = pd.read_csv(dataset_file, encoding='latin-1')
+    elif file_extension in ['.xlsx', '.xls']:
+        df = pd.read_excel(dataset_file)
+    elif file_extension == '.json':
+        df = pd.read_json(dataset_file)
+    elif file_extension == '.txt':
+        df = pd.read_csv(dataset_file, delimiter='\t', encoding='latin-1')
+    else:
+        return jsonify({'error': 'Unsupported file format'}), 400
+    df = df.dropna()
+    reading = df.iloc[-1][column]
+
+    
+    print(reading.tolist(), reading);
+    
+    return jsonify({
+        'reading': reading,
+        'min_value': request_data.get('min_value'),
+        'max_value': request_data.get('max_value'),
+        'color': request_data.get('color')
+    })
+
+
+
 
 
 

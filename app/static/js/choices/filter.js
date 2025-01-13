@@ -22,6 +22,9 @@ $(document).ready(function() {
                 <select id="chart-type-select" class="select-plot select2" name="chartType" style="width: 100%">
                     <option></option>
                     <option value="timeseries">Timeseries</option>
+                    <option value="averagebar">Average by label (bar)</option>
+                    <option value="averagecake">Average by label (cake)</option>
+                    <option value="gauge">Gauge</option>
                     <option value="heatmap">Heatmap</option>
                 </select>
                 </div>
@@ -37,7 +40,7 @@ $(document).ready(function() {
                 <label for="chart-type-select" class="form-label">Type of Chart</label>
                 <select id="chart-type-select" class="select-plot select2" name="chartType" style="width: 100%">
                     <option></option>
-                    <option value="count">Count</option>
+                    <option value="lasttext">Last value</option>
                 </select>
                 </div>
             `;
@@ -45,7 +48,7 @@ $(document).ready(function() {
             addedSelect();
 
 
-        } else if (parsedOption.type === "mapa") {
+        } else if (parsedOption.type === "none") {
             //alert("mapa");
         }
     });
@@ -60,7 +63,8 @@ $(document).ready(function() {
         var parsedOption = JSON.parse($('#data-select').val());
         parsedOption.widgetid = active_id;
         parsedOption.title = $('#widget-title');
-        
+        $('.temp-input').remove();
+
         switch (selectedChartType) {
             
             case 'heatmap':
@@ -69,11 +73,25 @@ $(document).ready(function() {
             case 'timeseries':
                 Timeseries(parsedOption);
                 break;
-            case 'count':
+            case 'gauge':
+                Gauge(parsedOption);
+                break;
+            case 'averagebar':
+                Averagebar(parsedOption);
+                break;
+            case 'averagecake':
+                Averagecake(parsedOption);
+                break;
+            case 'lasttext':
+                Lasttext(parsedOption);
                 break;
             default:
                 alert('Seleccione un tipo de gráfica válido.');
         }
+
+
+        
+
     });
     
     

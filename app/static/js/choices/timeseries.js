@@ -17,8 +17,8 @@ function Timeseries(dataJson) {
 
 
     var newSelectHtml = `
-                <label for="colorInput" class="form-label mt-4">Choose a color</label>
-                <input type="color" class="form-control form-control-color" id="colorInput" value="#563d7c" title="Choose a colorr"></input>
+                <label for="colorInput" class="form-label mt-4 temp-input">Choose a color</label>
+                <input type="color" class="form-control form-control-color temp-input" id="colorInput" value="#563d7c" title="Choose a color" style="width: 100%"></input>
             `;
     $('#added-options').append(newSelectHtml);
 
@@ -48,9 +48,10 @@ function Timeseries(dataJson) {
 function RenderSeries(containerId, data) {
     const container = $(`#${containerId}`);
 
+    container.find('canvas').remove();
     // Set container dimensions to 95%
     container.css({
-        margin: "auto"
+        margin: 0
     });
 
     // Create canvas element

@@ -13,14 +13,14 @@ function Heatmap(dataJson) {
     //IMPORTANTE
     
     var newSelectHtml = `
-                <div class="mt-4 mb-4">
+                <div class="mt-4 mb-4 temp-input">
                 <label for="second-attribute" class="form-label">Latitude</label>
                 <select id="second-attribute" class="select2" name="state" style="width: 100%" placeholder="Choose an attribute">
                     <option></option>
                 </select>
                 </div>
 
-                <div class="mb-4">
+                <div class="mb-4 temp-input">
                 <label for="third-attribute" class="form-label">Longitude</label>
                 <select id="third-attribute" class="select2" name="state" style="width: 100%" placeholder="Choose an attribute">
                     <option></option>

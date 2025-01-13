@@ -3,8 +3,10 @@ var plot = {};
 //DECLARAR TODOS LOS TIPOS DE FUNCION
 plot.GenerateTimeseries = GenerateTimeseries;
 plot.GenerateHeatmap = GenerateHeatmap;
-
-
+plot.GenerateAveragebar = GenerateAveragebar;
+plot.GenerateAveragecake = GenerateAveragecake;
+plot.GenerateGauge = GenerateGauge;
+plot.GenerateLasttext = GenerateLasttext;
 
 function addedSelect(){
     $('.select2').select2({
@@ -59,6 +61,7 @@ $(document).ready(function() {
 
     $(document).on("click", "#refresh-all", function () {
         refreshAll();
+        
     });
 
 });

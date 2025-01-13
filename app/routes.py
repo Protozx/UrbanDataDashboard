@@ -446,6 +446,12 @@ def handle_query():
             return timeseries(request_data)
         elif(plot_type == "heatmap"):
             return heatmap(request_data)
+        elif(plot_type == "averagebar"):
+            return averagebar(request_data)
+        elif(plot_type == "gauge"):
+            return gauge(request_data)
+        elif(plot_type == "lasttext"):
+            return lasttext(request_data)
         else:
             return jsonify({'error': 'Undefined plot type'}), 700
         
